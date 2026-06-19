@@ -144,7 +144,14 @@ const QUICK_ACTIONS = [
     meta: "Anytime",
     tone: "purple",
   },
-];
+] satisfies {
+  icon: LucideIcon;
+  title: string;
+  body: string;
+  href: string;
+  meta: string;
+  tone: keyof typeof ACCENT_STYLES;
+}[];
 
 const PURPOSES = [
   "Run your account, sign-in, and provide the dashboard.",
