@@ -1,4 +1,6 @@
+import Link from "next/link";
 import { revalidatePath } from "next/cache";
+import { ChevronRight, Download, Lock, Trash2 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -37,8 +39,8 @@ export default async function SettingsPage() {
   return (
     <div className="space-y-6">
       <header>
-        <h1 className="text-3xl font-bold tracking-tight">Settings</h1>
-        <p className="text-muted-foreground">Manage your personal account.</p>
+        <h1 className="text-3xl font-extrabold tracking-tight text-body">Settings</h1>
+        <p className="text-text-secondary">Manage your personal account.</p>
       </header>
 
       <form action={updateProfileAction}>
@@ -79,9 +81,61 @@ export default async function SettingsPage() {
           </CardContent>
         </Card>
         <div className="mt-6 flex justify-end">
-          <Button type="submit" variant="brand">Save changes</Button>
+          <Button type="submit">Save changes</Button>
         </div>
       </form>
+
+      <Card className="overflow-hidden">
+        <span aria-hidden className="block h-1 w-full bg-primary" />
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Lock className="h-4 w-4 text-primary" /> Privacy & data
+          </CardTitle>
+          <CardDescription>
+            Manage your PDPA consents, export everything we hold, or delete your
+            account.
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-2">
+          <Link
+            href="/dashboard/privacy"
+            className="flex items-center justify-between rounded-md border bg-surface px-4 py-3 hover:border-primary/40"
+          >
+            <div className="flex items-center gap-3">
+              <Download className="h-4 w-4 text-primary" />
+              <div>
+                <div className="text-sm font-extrabold text-body">Export my data</div>
+                <div className="text-xs text-text-secondary">
+                  JSON archive of every record we hold about you.
+                </div>
+              </div>
+            </div>
+            <ChevronRight className="h-4 w-4 text-text-muted" />
+          </Link>
+          <Link
+            href="/dashboard/privacy"
+            className="flex items-center justify-between rounded-md border bg-surface px-4 py-3 hover:border-destructive/40"
+          >
+            <div className="flex items-center gap-3">
+              <Trash2 className="h-4 w-4 text-destructive" />
+              <div>
+                <div className="text-sm font-extrabold text-body">Delete my account</div>
+                <div className="text-xs text-text-secondary">
+                  30-day grace period — cancel anytime before then.
+                </div>
+              </div>
+            </div>
+            <ChevronRight className="h-4 w-4 text-text-muted" />
+          </Link>
+          <p className="pt-1 text-xs text-text-muted">
+            Read the full{" "}
+            <Link href="/pdpa" className="font-semibold text-primary underline-offset-2 hover:underline">
+              Privacy &amp; PDPA Notice
+            </Link>
+            .
+          </p>
+        </CardContent>
+      </Card>
     </div>
   );
 }

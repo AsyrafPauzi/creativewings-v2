@@ -33,7 +33,7 @@ export function SubmitEntryForm({ action, ageBrackets, checkoutMessage }: Props)
           <CardDescription>{state.success}</CardDescription>
         </CardHeader>
         <CardContent>
-          <Button asChild variant="brand">
+          <Button asChild>
             <a href="/dashboard">Go to dashboard</a>
           </Button>
         </CardContent>
@@ -125,7 +125,7 @@ export function SubmitEntryForm({ action, ageBrackets, checkoutMessage }: Props)
 
       {state.error && <p className="text-sm text-destructive">{state.error}</p>}
 
-      <Button type="submit" variant="brand" size="lg" className="w-full" disabled={pending}>
+      <Button type="submit" size="lg" className="w-full" disabled={pending}>
         {pending ? "Submitting…" : "Submit entry"}
       </Button>
       <p className="text-xs text-muted-foreground">

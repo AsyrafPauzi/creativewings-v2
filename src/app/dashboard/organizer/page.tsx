@@ -21,7 +21,7 @@ async function updateOrganizerAction(formData: FormData) {
   } = await supabase.auth.getUser();
   if (!user) return;
 
-  const businessName = String(formData.get("business_name") ?? "").trim();
+  const orgName = String(formData.get("name") ?? "").trim();
   const industry = String(formData.get("industry") ?? "").trim() || null;
   const about = String(formData.get("about") ?? "").trim() || null;
   const website = String(formData.get("website") ?? "").trim() || null;
@@ -31,15 +31,15 @@ async function updateOrganizerAction(formData: FormData) {
   const country = String(formData.get("country") ?? "").trim() || null;
   const isListed = formData.get("is_listed") === "on";
 
-  if (!businessName) return;
+  if (!orgName) return;
 
   await supabase
     .from("organizers")
     .upsert(
       {
         owner_id: user.id,
-        slug: slugify(businessName) || user.id,
-        business_name: businessName,
+        slug: slugify(orgName) || user.id,
+        name: orgName,
         industry,
         about,
         website,
@@ -57,7 +57,7 @@ async function updateOrganizerAction(formData: FormData) {
 }
 
 export default async function DashboardOrganizerPage() {
-  const { user } = await requireRole("business");
+  const { user } = await requireRole("organizer");
   const supabase = await createClient();
 
   const { data: org } = await supabase
@@ -70,9 +70,9 @@ export default async function DashboardOrganizerPage() {
     <div className="space-y-6">
       <header className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">Your organisation</h1>
-          <p className="text-muted-foreground">
-            This information powers your public organiser page.
+          <h1 className="text-3xl font-extrabold tracking-tight text-body">Your organization</h1>
+          <p className="text-text-secondary">
+            This information powers your public organizer page.
           </p>
         </div>
         {org && (
@@ -87,14 +87,14 @@ export default async function DashboardOrganizerPage() {
           <CardHeader>
             <CardTitle>Public profile</CardTitle>
             <CardDescription>
-              Required fields are needed before your organisation is listed publicly.
+              Required fields are needed before your organization is listed publicly.
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="grid gap-4 md:grid-cols-2">
               <div className="space-y-2">
-                <Label htmlFor="business_name">Organisation name *</Label>
-                <Input id="business_name" name="business_name" defaultValue={org?.business_name ?? ""} required />
+                <Label htmlFor="name">Organization name *</Label>
+                <Input id="name" name="name" defaultValue={org?.name ?? ""} required />
               </div>
               <div className="space-y-2">
                 <Label htmlFor="industry">Industry</Label>
@@ -134,14 +134,14 @@ export default async function DashboardOrganizerPage() {
           <CardHeader>
             <CardTitle>Directory listing</CardTitle>
             <CardDescription>
-              Listed organisations appear at /organizers. Toggle off to hide.
+              Listed organizations appear at /organizers. Toggle off to hide.
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <label className="flex items-center justify-between gap-3 rounded-lg border p-3">
+            <label className="flex items-center justify-between gap-3 rounded-md border p-3">
               <div>
-                <div className="text-sm font-medium">Show in the public directory</div>
-                <div className="text-xs text-muted-foreground">
+                <div className="text-sm font-bold text-body">Show in the public directory</div>
+                <div className="mt-1 text-xs text-text-secondary">
                   {org?.is_verified ? (
                     <Badge variant="success">Verified</Badge>
                   ) : (
@@ -160,7 +160,7 @@ export default async function DashboardOrganizerPage() {
         </Card>
 
         <div className="flex justify-end">
-          <Button type="submit" variant="brand" size="lg">Save changes</Button>
+          <Button type="submit" size="lg">Save changes</Button>
         </div>
       </form>
     </div>

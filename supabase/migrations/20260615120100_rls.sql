@@ -94,8 +94,13 @@ drop policy if exists organizers_admin_all     on public.organizers;
 create policy organizers_public_select on public.organizers
   for select using (is_listed = true or owner_id = auth.uid() or public.is_admin());
 
+-- Note: cast to text so the policy is valid both before AND after the
+-- `business` -> `organizer` enum rename (see 20260616120000_rename_organizer_and_extend.sql).
 create policy organizers_owner_insert on public.organizers
-  for insert with check (owner_id = auth.uid() and public.current_role() in ('business', 'admin'));
+  for insert with check (
+    owner_id = auth.uid()
+    and public.current_role()::text in ('business', 'organizer', 'admin')
+  );
 
 create policy organizers_owner_update on public.organizers
   for update using (owner_id = auth.uid()) with check (owner_id = auth.uid());
@@ -127,7 +132,10 @@ create policy creators_admin_all on public.creators
 
 drop policy if exists campaigns_public_select on public.campaigns;
 drop policy if exists campaigns_owner_select  on public.campaigns;
-drop policy if exists campaigns_owner_cud     on public.campaigns;
+drop policy if exists campaigns_owner_cud     on public.campaigns;  -- legacy combined policy
+drop policy if exists campaigns_owner_insert  on public.campaigns;
+drop policy if exists campaigns_owner_update  on public.campaigns;
+drop policy if exists campaigns_owner_delete  on public.campaigns;
 drop policy if exists campaigns_admin_all     on public.campaigns;
 
 create policy campaigns_public_select on public.campaigns

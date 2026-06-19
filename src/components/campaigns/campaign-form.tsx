@@ -1,6 +1,6 @@
 "use client";
 
-import { useActionState } from "react";
+import { useActionState, useMemo, useState } from "react";
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -10,7 +10,11 @@ import { Select } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 
 import type { CampaignFormState } from "@/app/dashboard/campaigns/actions";
-import type { CampaignRow as Campaign } from "@/lib/supabase/database.types";
+import type {
+  CampaignRow as Campaign,
+  CWCampaignType,
+  SubCategoryRow,
+} from "@/lib/supabase/database.types";
 
 interface Props {
   action: (
@@ -19,6 +23,8 @@ interface Props {
   ) => Promise<CampaignFormState>;
   defaults?: Partial<Campaign>;
   submitLabel?: string;
+  /** All sub-categories. The form filters them by selected type at runtime. */
+  subCategories: SubCategoryRow[];
 }
 
 const initial: CampaignFormState = {};
@@ -28,8 +34,29 @@ function dateForInput(value: string | null | undefined) {
   return new Date(value).toISOString().slice(0, 10);
 }
 
-export function CampaignForm({ action, defaults = {}, submitLabel = "Save campaign" }: Props) {
+function labelForType(t: CWCampaignType) {
+  return t === "competition" ? "Competitions" : t === "activity" ? "Activities" : "Workshops";
+}
+
+export function CampaignForm({
+  action,
+  defaults = {},
+  submitLabel = "Save campaign",
+  subCategories,
+}: Props) {
   const [state, formAction, pending] = useActionState(action, initial);
+  const [type, setType] = useState<CWCampaignType>(
+    (defaults.type as CWCampaignType | undefined) ?? "competition",
+  );
+  const [subCategory, setSubCategory] = useState<string>(defaults.sub_category ?? "");
+
+  const availableSubs = useMemo(
+    () =>
+      subCategories
+        .filter((s) => s.applicable_types.includes(type))
+        .sort((a, b) => a.sort_order - b.sort_order),
+    [subCategories, type],
+  );
 
   return (
     <form action={formAction} className="space-y-6">
@@ -46,10 +73,30 @@ export function CampaignForm({ action, defaults = {}, submitLabel = "Save campai
           <div className="grid gap-4 md:grid-cols-2">
             <div className="space-y-2">
               <Label htmlFor="type">Type</Label>
-              <Select id="type" name="type" defaultValue={defaults.type ?? "competition"}>
+              <Select
+                id="type"
+                name="type"
+                value={type}
+                onChange={(e) => {
+                  const next = e.target.value as CWCampaignType;
+                  setType(next);
+                  if (
+                    subCategory &&
+                    !subCategories
+                      .find((s) => s.slug === subCategory)
+                      ?.applicable_types.includes(next)
+                  ) {
+                    setSubCategory("");
+                  }
+                }}
+              >
                 <option value="competition">Competition (judged)</option>
                 <option value="activity">Activity (participation)</option>
+                <option value="workshop">Workshop (learning)</option>
               </Select>
+              <p className="text-xs text-text-muted">
+                Determines the listing page and which sub-categories are available.
+              </p>
             </div>
             <div className="space-y-2">
               <Label htmlFor="event_mode">Event mode</Label>
@@ -62,23 +109,42 @@ export function CampaignForm({ action, defaults = {}, submitLabel = "Save campai
           </div>
           <div className="grid gap-4 md:grid-cols-2">
             <div className="space-y-2">
-              <Label htmlFor="category">Category tag</Label>
+              <Label htmlFor="sub_category">Sub-category</Label>
+              <Select
+                id="sub_category"
+                name="sub_category"
+                value={subCategory}
+                onChange={(e) => setSubCategory(e.target.value)}
+              >
+                <option value="">— Select a sub-category —</option>
+                {availableSubs.map((s) => (
+                  <option key={s.slug} value={s.slug}>
+                    {s.label_en}
+                  </option>
+                ))}
+              </Select>
+              <p className="text-xs text-text-muted">
+                Only sub-categories applicable to {labelForType(type)} are shown.
+              </p>
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="category">Custom tag (optional)</Label>
               <Input
                 id="category"
                 name="category"
                 defaultValue={defaults.category ?? ""}
-                placeholder="e.g. Art, Running, Design"
+                placeholder="e.g. Beginner, Hybrid, K-12"
               />
             </div>
-            <div className="space-y-2">
-              <Label htmlFor="short_description">Short description</Label>
-              <Input
-                id="short_description"
-                name="short_description"
-                defaultValue={defaults.short_description ?? ""}
-                placeholder="One-line pitch shown on cards"
-              />
-            </div>
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="short_description">Short description</Label>
+            <Input
+              id="short_description"
+              name="short_description"
+              defaultValue={defaults.short_description ?? ""}
+              placeholder="One-line pitch shown on cards"
+            />
           </div>
           <div className="space-y-2">
             <Label htmlFor="description">Full description</Label>
@@ -253,7 +319,7 @@ export function CampaignForm({ action, defaults = {}, submitLabel = "Save campai
       {state.error && <p className="text-sm text-destructive">{state.error}</p>}
 
       <div className="flex justify-end">
-        <Button type="submit" variant="brand" size="lg" disabled={pending}>
+        <Button type="submit" size="lg" disabled={pending}>
           {pending ? "Saving…" : submitLabel}
         </Button>
       </div>
@@ -293,8 +359,8 @@ function BoolField({
   defaultChecked?: boolean;
 }) {
   return (
-    <label className="flex items-center justify-between gap-3 rounded-lg border p-3">
-      <span className="text-sm font-medium">{label}</span>
+    <label className="flex items-center justify-between gap-3 rounded-md border p-3">
+      <span className="text-sm font-semibold text-body">{label}</span>
       <input
         type="checkbox"
         name={name}

@@ -48,7 +48,7 @@ export default async function ReviewSubmissionPage({
   params: Promise<{ id: string; subId: string }>;
 }) {
   const { id, subId } = await params;
-  await requireRole("business");
+  await requireRole("organizer");
   const supabase = await createClient();
 
   const { data: sub } = await supabase
@@ -162,7 +162,7 @@ export default async function ReviewSubmissionPage({
               <Textarea id="note" name="note" rows={3} defaultValue={sub.moderation_note ?? ""} />
             </div>
             <div className="flex flex-wrap gap-2">
-              <Button type="submit" formAction={moderate.bind(null, "approved")} variant="brand">
+              <Button type="submit" formAction={moderate.bind(null, "approved")}>
                 Approve
               </Button>
               <Button

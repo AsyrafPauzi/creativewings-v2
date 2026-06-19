@@ -4,72 +4,67 @@
 
 @layer base {
   :root {
+    /* === Surfaces === */
     --background: 0 0% 100%;
-    --foreground: 222 47% 11%;
+    --surface: 225 17% 98%;
+    --foreground: 220 50% 8%;
 
     --card: 0 0% 100%;
-    --card-foreground: 222 47% 11%;
+    --card-foreground: 220 50% 8%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 222 47% 11%;
+    --popover-foreground: 220 50% 8%;
 
-    /* Creative Wings brand — warm violet -> sky gradient */
-    --brand: 262 83% 58%;
+    /* === Text === */
+    --text-body: 0 0% 0%;
+    --text-secondary: 0 0% 33%;
+    --text-muted: 222 6% 57%;
+
+    /* === Brand === */
+    /* Coral = primary */
+    --brand: 345 81% 65%;
     --brand-foreground: 0 0% 100%;
+    --brand-soft: 345 76% 95%;
 
-    --primary: 262 83% 58%;
+    --primary: 345 81% 65%;
     --primary-foreground: 0 0% 100%;
+    --primary-hover: 345 50% 55%;
+    --primary-soft: 345 76% 95%;
 
-    --secondary: 220 14% 96%;
-    --secondary-foreground: 222 47% 11%;
+    /* Blue = secondary */
+    --secondary: 209 79% 34%;
+    --secondary-foreground: 0 0% 100%;
+    --secondary-hover: 209 79% 28%;
+    --secondary-soft: 209 50% 92%;
 
-    --muted: 220 14% 96%;
-    --muted-foreground: 220 9% 46%;
+    /* === Neutrals === */
+    --muted: 225 17% 96%;
+    --muted-foreground: 222 6% 57%;
 
-    --accent: 199 89% 48%;
-    --accent-foreground: 0 0% 100%;
+    --accent: 209 50% 92%;
+    --accent-foreground: 209 79% 28%;
 
-    --destructive: 0 84% 60%;
+    --destructive: 0 72% 51%;
     --destructive-foreground: 0 0% 100%;
+    --destructive-soft: 0 80% 95%;
 
-    --border: 220 13% 91%;
-    --input: 220 13% 91%;
-    --ring: 262 83% 58%;
+    --success: 142 76% 36%;
+    --success-foreground: 0 0% 100%;
+    --success-soft: 142 50% 93%;
+
+    --warning: 30 92% 44%;
+    --warning-foreground: 0 0% 100%;
+    --warning-soft: 30 80% 92%;
+
+    --info: 209 79% 34%;
+    --info-soft: 209 50% 92%;
+
+    --border: 230 12% 92%;
+    --border-strong: 222 11% 81%;
+    --input: 230 12% 92%;
+    --ring: 345 81% 65%;
 
     --radius: 0.75rem;
-  }
-
-  .dark {
-    --background: 222 47% 6%;
-    --foreground: 210 40% 98%;
-
-    --card: 222 47% 8%;
-    --card-foreground: 210 40% 98%;
-
-    --popover: 222 47% 8%;
-    --popover-foreground: 210 40% 98%;
-
-    --brand: 262 83% 68%;
-    --brand-foreground: 0 0% 100%;
-
-    --primary: 262 83% 68%;
-    --primary-foreground: 0 0% 100%;
-
-    --secondary: 217 33% 17%;
-    --secondary-foreground: 210 40% 98%;
-
-    --muted: 217 33% 17%;
-    --muted-foreground: 215 20% 65%;
-
-    --accent: 199 89% 58%;
-    --accent-foreground: 0 0% 100%;
-
-    --destructive: 0 84% 60%;
-    --destructive-foreground: 0 0% 100%;
-
-    --border: 217 33% 17%;
-    --input: 217 33% 17%;
-    --ring: 262 83% 68%;
   }
 }
 
@@ -81,19 +76,35 @@
     @apply bg-background text-foreground antialiased;
     font-feature-settings: "rlig" 1, "calt" 1;
   }
-  h1, h2, h3, h4 {
-    @apply font-semibold tracking-tight;
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-bold tracking-tight;
+    font-family: var(--font-sans);
   }
 }
 
 @layer components {
   .cw-gradient-text {
-    background-image: linear-gradient(135deg, hsl(var(--brand)) 0%, hsl(var(--accent)) 100%);
+    background-image: linear-gradient(135deg, hsl(var(--primary)) 0%, hsl(var(--secondary)) 100%);
     -webkit-background-clip: text;
     background-clip: text;
     color: transparent;
   }
   .cw-gradient-bg {
-    background-image: linear-gradient(135deg, hsl(var(--brand)) 0%, hsl(var(--accent)) 100%);
+    background-image: linear-gradient(135deg, hsl(var(--primary)) 0%, hsl(var(--secondary)) 100%);
+  }
+  .cw-hero-gradient {
+    background-image:
+      radial-gradient(900px 600px at 8% -20%, hsl(var(--primary) / 0.18), transparent 60%),
+      radial-gradient(900px 600px at 100% 110%, hsl(var(--secondary) / 0.18), transparent 60%),
+      linear-gradient(180deg, hsl(var(--background)) 0%, hsl(var(--surface)) 100%);
+  }
+  .cw-card {
+    @apply rounded-xl border bg-card shadow-[0_1px_2px_rgb(0_0_0/0.04)];
+  }
+  .cw-section {
+    @apply py-16 md:py-24;
+  }
+  .cw-container {
+    @apply mx-auto w-full max-w-[1280px] px-4 md:px-8;
   }
 }

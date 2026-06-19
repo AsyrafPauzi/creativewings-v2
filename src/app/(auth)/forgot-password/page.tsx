@@ -1,24 +1,29 @@
-import Link from "next/link";
-
-import { ForgotPasswordForm } from "./forgot-password-form";
+import { ForgotPasswordForm, ForgotPasswordSentPanel } from "./forgot-password-form";
+import { AuthFormHeader, AuthSplitPage } from "@/components/auth/auth-ui";
 
 export const metadata = { title: "Forgot password" };
 
-export default function ForgotPasswordPage() {
+export default async function ForgotPasswordPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ sent?: string; email?: string; expired?: string }>;
+}) {
+  const { sent, email, expired } = await searchParams;
+  const isSent = sent === "1";
+
   return (
-    <div>
-      <h1 className="text-3xl font-bold tracking-tight">Forgot your password?</h1>
-      <p className="mt-2 text-muted-foreground">
-        We&apos;ll send you a secure link to reset it.
-      </p>
-      <div className="mt-8">
-        <ForgotPasswordForm />
-      </div>
-      <p className="mt-6 text-sm text-muted-foreground">
-        <Link className="font-medium text-primary hover:underline" href="/sign-in">
-          Back to sign in
-        </Link>
-      </p>
-    </div>
+    <AuthSplitPage variant={isSent ? "forgot-password-sent" : "forgot-password"}>
+      {isSent ? (
+        <ForgotPasswordSentPanel email={email?.trim()} />
+      ) : (
+        <>
+          <AuthFormHeader
+            title="Lost the door key?"
+            subtitle="Enter the email tied to your account. We'll mail a reset link that's good for one hour."
+          />
+          <ForgotPasswordForm expired={expired === "1"} />
+        </>
+      )}
+    </AuthSplitPage>
   );
 }

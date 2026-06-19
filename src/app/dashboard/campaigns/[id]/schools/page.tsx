@@ -4,7 +4,7 @@ import { requireRole } from "@/lib/auth";
 export const metadata = { title: "Schools & coupons" };
 
 export default async function CampaignSchoolsPage() {
-  await requireRole("business");
+  await requireRole("organizer");
   return (
     <ComingSoon
       title="Schools & sponsor coupons"

@@ -11,8 +11,10 @@ export type Json =
   | { [key: string]: Json | undefined }
   | Json[];
 
-export type CWRole = "contestant" | "creator" | "business" | "admin";
-export type CWCampaignType = "competition" | "activity";
+export type CWRole = "contestant" | "creator" | "organizer" | "admin";
+export type CWAgeCategory = "under_13" | "teen" | "young_adult" | "adult";
+export type CWLocale = "en" | "zh";
+export type CWCampaignType = "competition" | "activity" | "workshop";
 export type CWCampaignStatus =
   | "draft"
   | "pending"
@@ -41,6 +43,31 @@ export type CWFieldType =
   | "checkbox"
   | "file";
 export type CWWalletEntryType = "credit" | "debit";
+export type CWSponsorPlacement =
+  | "landing_hero"
+  | "campaign_detail_top"
+  | "campaign_detail_bottom"
+  | "programme_inline";
+export type CWExportStatus =
+  | "pending"
+  | "processing"
+  | "ready"
+  | "expired"
+  | "failed";
+export type CWExportFormat = "json" | "csv_zip" | "pdf_report";
+export type CWDeletionStatus =
+  | "scheduled"
+  | "cancelled"
+  | "processing"
+  | "completed"
+  | "failed";
+export type CWGuardianLinkStatus = "pending_invite" | "active";
+export type CWPdpaConsentEvent =
+  | "accept_signup"
+  | "accept_update"
+  | "consent_change"
+  | "withdraw"
+  | "reaccept";
 
 // ---- Row types (the source of truth) ---------------------------------------
 
@@ -56,7 +83,94 @@ export interface ProfileRow {
   phone: string | null;
   country: string | null;
   city: string | null;
+  date_of_birth: string | null;
+  age_category: CWAgeCategory | null;
+  pdpa_consent_at: string | null;
+  pdpa_version_accepted: string | null;
+  consent_marketing: boolean;
+  consent_analytics: boolean;
+  consent_third_party: boolean;
+  consent_public_profile: boolean;
+  consent_updated_at: string | null;
+  guardian_name: string | null;
+  guardian_email: string | null;
+  guardian_phone: string | null;
+  guardian_consent_at: string | null;
+  is_minor: boolean;
+  locale: CWLocale;
+  email_verified_at: string | null;
+  email_verification_sent_at: string | null;
   onboarded_at: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface EmailVerificationTokenRow {
+  user_id: string;
+  token_hash: string;
+  expires_at: string;
+  created_at: string;
+}
+
+export interface GuardianLinkRow {
+  id: string;
+  guardian_id: string | null;
+  student_id: string;
+  guardian_name: string;
+  guardian_email: string;
+  status: CWGuardianLinkStatus;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface PdpaPolicyVersionRow {
+  id: string;
+  version: string;
+  effective_from: string;
+  summary: string | null;
+  body_md: string;
+  content_hash: string;
+  is_current: boolean;
+  created_at: string;
+}
+
+export interface PdpaConsentRow {
+  id: string;
+  user_id: string;
+  policy_version: string;
+  event: CWPdpaConsentEvent;
+  consent_marketing: boolean | null;
+  consent_analytics: boolean | null;
+  consent_third_party: boolean | null;
+  consent_public_profile: boolean | null;
+  ip_address: string | null;
+  user_agent: string | null;
+  created_at: string;
+}
+
+export interface DataExportRequestRow {
+  id: string;
+  user_id: string;
+  status: CWExportStatus;
+  format: CWExportFormat;
+  file_path: string | null;
+  file_size: number | null;
+  expires_at: string | null;
+  failed_reason: string | null;
+  requested_at: string;
+  completed_at: string | null;
+}
+
+export interface AccountDeletionRequestRow {
+  id: string;
+  user_id: string;
+  status: CWDeletionStatus;
+  reason: string | null;
+  scheduled_for: string;
+  cancelled_at: string | null;
+  completed_at: string | null;
+  failed_reason: string | null;
+  requested_ip: string | null;
   created_at: string;
   updated_at: string;
 }
@@ -65,6 +179,7 @@ export interface OrganizerRow {
   id: string;
   owner_id: string;
   slug: string;
+  name: string;
   business_name: string;
   logo_url: string | null;
   banner_url: string | null;
@@ -109,6 +224,68 @@ export interface CreatorRow {
   updated_at: string;
 }
 
+export interface PortfolioProjectRow {
+  id: string;
+  creator_id: string;
+  slug: string;
+  title: string;
+  cover_url: string | null;
+  description: string | null;
+  tools: string[];
+  tags: string[];
+  sdg_goals: number[];
+  views_count: number;
+  likes_count: number;
+  is_published: boolean;
+  published_at: string | null;
+  sort_order: number;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface SponsorSlotRow {
+  id: string;
+  placement: CWSponsorPlacement;
+  sponsor_name: string;
+  title: string;
+  body: string | null;
+  cta_label: string;
+  cta_href: string;
+  image_url: string | null;
+  background_from: string | null;
+  background_to: string | null;
+  applicable_types: CWCampaignType[];
+  applicable_campaign_id: string | null;
+  applicable_sub_category: string | null;
+  is_published: boolean;
+  active_from: string | null;
+  active_until: string | null;
+  sort_order: number;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface SubCategoryRow {
+  slug: string;
+  label_en: string;
+  label_zh: string | null;
+  icon: string;
+  description_en: string | null;
+  description_zh: string | null;
+  applicable_types: CWCampaignType[];
+  sort_order: number;
+  created_at: string;
+}
+
+export interface PortfolioProjectAssetRow {
+  id: string;
+  project_id: string;
+  url: string;
+  caption: string | null;
+  sort_order: number;
+  created_at: string;
+}
+
 export interface CampaignRow {
   id: string;
   organizer_id: string;
@@ -118,6 +295,7 @@ export interface CampaignRow {
   type: CWCampaignType;
   status: CWCampaignStatus;
   category: string | null;
+  sub_category: string | null;
   short_description: string | null;
   description: string | null;
   banner_url: string | null;
@@ -305,6 +483,21 @@ export interface AuditLogRow {
   created_at: string;
 }
 
+export interface SdgGoalsRefRow {
+  goal_number: number;
+  title_en: string;
+  title_zh: string | null;
+  color: string;
+  short_label: string | null;
+}
+
+export interface PublicVoteRow {
+  id: string;
+  submission_id: string;
+  voter_hash: string;
+  voted_at: string;
+}
+
 // ---- Helpers ---------------------------------------------------------------
 
 type WithDefaults<T, K extends keyof T> = Omit<Partial<T>, K> & Pick<T, K>;
@@ -322,8 +515,15 @@ export interface Database {
   public: {
     Tables: {
       profiles: Table<ProfileRow, "id" | "email">;
-      organizers: Table<OrganizerRow, "owner_id" | "slug" | "business_name">;
+      email_verification_tokens: Table<
+        EmailVerificationTokenRow,
+        "user_id" | "token_hash" | "expires_at"
+      >;
+      guardian_links: Table<GuardianLinkRow, "student_id" | "guardian_name" | "guardian_email">;
+      organizers: Table<OrganizerRow, "owner_id" | "slug" | "name">;
       creators: Table<CreatorRow, "owner_id" | "slug" | "display_name">;
+      portfolio_projects: Table<PortfolioProjectRow, "creator_id" | "slug" | "title">;
+      portfolio_project_assets: Table<PortfolioProjectAssetRow, "project_id" | "url">;
       campaigns: Table<CampaignRow, "organizer_id" | "slug" | "title">;
       age_brackets: Table<AgeBracketRow, "campaign_id" | "key" | "label">;
       prizes: Table<PrizeRow, "campaign_id" | "title">;
@@ -340,6 +540,20 @@ export interface Database {
       badges: Table<BadgeRow, "slug" | "name">;
       user_badges: Table<UserBadgeRow, "user_id" | "badge_id">;
       audit_log: Table<AuditLogRow, "action" | "object_type">;
+      sdg_goals_ref: Table<SdgGoalsRefRow, "goal_number" | "title_en" | "color">;
+      public_votes: Table<PublicVoteRow, "submission_id" | "voter_hash">;
+      sub_categories: Table<SubCategoryRow, "slug" | "label_en" | "icon">;
+      sponsor_slots: Table<
+        SponsorSlotRow,
+        "placement" | "sponsor_name" | "title"
+      >;
+      pdpa_policy_versions: Table<
+        PdpaPolicyVersionRow,
+        "version" | "body_md" | "content_hash"
+      >;
+      pdpa_consents: Table<PdpaConsentRow, "user_id" | "policy_version" | "event">;
+      data_export_requests: Table<DataExportRequestRow, "user_id">;
+      account_deletion_requests: Table<AccountDeletionRequestRow, "user_id">;
     };
     Views: Record<string, never>;
     Functions: Record<string, never>;
@@ -352,6 +566,10 @@ export interface Database {
       cw_moderation_status: CWModerationStatus;
       cw_field_type: CWFieldType;
       cw_wallet_entry_type: CWWalletEntryType;
+      cw_sponsor_placement: CWSponsorPlacement;
+      cw_export_status: CWExportStatus;
+      cw_export_format: CWExportFormat;
+      cw_deletion_status: CWDeletionStatus;
     };
     CompositeTypes: Record<string, never>;
   };

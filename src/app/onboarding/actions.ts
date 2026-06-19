@@ -11,6 +11,8 @@ export interface OnboardingState {
   error?: string;
 }
 
+const VALID_ROLES = new Set(["contestant", "creator", "organizer"]);
+
 async function ensureUniqueSlug(
   supabase: Awaited<ReturnType<typeof createClient>>,
   table: "organizers" | "creators",
@@ -35,7 +37,7 @@ export async function pickRoleAction(
   formData: FormData,
 ): Promise<OnboardingState> {
   const role = String(formData.get("role") ?? "") as CWRole;
-  if (!["contestant", "creator", "business"].includes(role)) {
+  if (!VALID_ROLES.has(role)) {
     return { error: "Choose a valid role." };
   }
 
@@ -75,12 +77,13 @@ export async function completeProfileAction(
 
   const fullName = String(formData.get("full_name") ?? "").trim();
   const phone = String(formData.get("phone") ?? "").trim() || null;
-  const country = String(formData.get("country") ?? "").trim() || null;
+  const countryInput = String(formData.get("country") ?? "").trim();
+  const country = countryInput || (profile.role === "contestant" ? "Malaysia" : null);
   const city = String(formData.get("city") ?? "").trim() || null;
 
   if (!fullName) return { error: "Please enter your name." };
 
-  await supabase
+  const { error: profileUpdateError } = await supabase
     .from("profiles")
     .update({
       full_name: fullName,
@@ -90,23 +93,24 @@ export async function completeProfileAction(
       city,
     })
     .eq("id", user.id);
+  if (profileUpdateError) return { error: profileUpdateError.message };
 
-  if (profile.role === "business") {
-    const businessName = String(formData.get("business_name") ?? "").trim();
+  if (profile.role === "organizer") {
+    const orgName = String(formData.get("name") ?? "").trim();
     const industry = String(formData.get("industry") ?? "").trim() || null;
     const about = String(formData.get("about") ?? "").trim() || null;
     const website = String(formData.get("website") ?? "").trim() || null;
 
-    if (!businessName) return { error: "Please enter your business name." };
+    if (!orgName) return { error: "Please enter your organization name." };
 
-    const slug = await ensureUniqueSlug(supabase, "organizers", slugify(businessName));
+    const slug = await ensureUniqueSlug(supabase, "organizers", slugify(orgName));
     const { error } = await supabase
       .from("organizers")
       .upsert(
         {
           owner_id: user.id,
           slug,
-          business_name: businessName,
+          name: orgName,
           industry,
           about,
           website,
@@ -144,10 +148,11 @@ export async function completeProfileAction(
     if (error) return { error: error.message };
   }
 
-  await supabase
+  const { error: onboardError } = await supabase
     .from("profiles")
     .update({ onboarded_at: new Date().toISOString() })
     .eq("id", user.id);
+  if (onboardError) return { error: onboardError.message };
 
   revalidatePath("/", "layout");
   redirect("/dashboard");

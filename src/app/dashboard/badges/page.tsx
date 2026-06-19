@@ -27,8 +27,8 @@ export default async function BadgesPage() {
   return (
     <div className="space-y-6">
       <header>
-        <h1 className="text-3xl font-bold tracking-tight">Badges</h1>
-        <p className="text-muted-foreground">
+        <h1 className="text-3xl font-extrabold tracking-tight text-body">Badges</h1>
+        <p className="text-text-secondary">
           Earn badges as you participate in campaigns and grow on Creative Wings.
         </p>
       </header>

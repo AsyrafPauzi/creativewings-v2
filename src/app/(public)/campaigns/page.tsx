@@ -2,7 +2,9 @@ import Link from "next/link";
 
 import { CampaignsGrid } from "@/components/site/campaigns-grid";
 import type { CampaignCardData } from "@/components/site/campaign-card";
+import { SdgIcon } from "@/components/site/sdg-icons";
 import { createClient } from "@/lib/supabase/server";
+import { SDG_GOALS } from "@/lib/utils";
 
 export const metadata = { title: "Campaigns" };
 export const revalidate = 60;
@@ -10,21 +12,25 @@ export const revalidate = 60;
 export default async function CampaignsListPage({
   searchParams,
 }: {
-  searchParams: Promise<{ type?: string }>;
+  searchParams: Promise<{ type?: string; sdg?: string }>;
 }) {
-  const { type } = await searchParams;
+  const { type, sdg } = await searchParams;
+  const sdgFilter = sdg ? Number.parseInt(sdg, 10) : null;
   const supabase = await createClient();
 
   let query = supabase
     .from("campaigns")
     .select(
-      "id, slug, title, short_description, banner_url, category, type, status, entry_fee, currency, submission_start, submission_deadline, sdg_goals, organizer:organizer_id(business_name, slug, logo_url)",
+      "id, slug, title, short_description, banner_url, category, type, status, entry_fee, currency, submission_start, submission_deadline, sdg_goals, submissions_count, organizer:organizer_id(name, slug, logo_url)",
     )
     .in("status", ["published", "closed"])
     .order("submission_deadline", { ascending: true });
 
-  if (type === "competition" || type === "activity") {
+  if (type === "competition" || type === "activity" || type === "workshop") {
     query = query.eq("type", type);
+  }
+  if (sdgFilter && sdgFilter >= 1 && sdgFilter <= 17) {
+    query = query.contains("sdg_goals", [sdgFilter]);
   }
 
   const { data: campaigns } = await query;
@@ -34,26 +40,33 @@ export default async function CampaignsListPage({
   }));
 
   return (
-    <div className="container py-14">
-      <header className="mb-10 flex flex-wrap items-end justify-between gap-4">
-        <div>
-          <h1 className="text-4xl font-bold tracking-tight">Campaigns</h1>
-          <p className="mt-2 text-muted-foreground">
-            Discover open competitions and creative activities.
-          </p>
-        </div>
-        <nav className="flex gap-2">
-          <FilterPill href="/campaigns" active={!type}>
-            All
-          </FilterPill>
-          <FilterPill href="/activities" active={type === "activity"}>
-            Activities
-          </FilterPill>
-          <FilterPill href="/competitions" active={type === "competition"}>
-            Competitions
-          </FilterPill>
-        </nav>
+    <div className="cw-container py-14 md:py-20">
+      <header className="mb-8 flex flex-col gap-3">
+        <span className="text-xs font-bold uppercase tracking-[0.25em] text-primary">All campaigns</span>
+        <h1 className="text-4xl font-extrabold tracking-tight text-body md:text-5xl">
+          {sdgFilter
+            ? `Campaigns aligned to SDG ${sdgFilter}: ${SDG_GOALS[sdgFilter]?.title ?? ""}`
+            : "Discover open campaigns"}
+        </h1>
+        <p className="max-w-2xl text-text-secondary">
+          Open competitions and creative activities you can join right now — sorted by deadline.
+        </p>
       </header>
+
+      <div className="mb-8 flex flex-wrap items-center gap-2">
+        <FilterPill href="/campaigns" active={!type && !sdgFilter}>All</FilterPill>
+        <FilterPill href="/campaigns?type=competition" active={type === "competition"}>Competitions</FilterPill>
+        <FilterPill href="/campaigns?type=activity" active={type === "activity"}>Activities</FilterPill>
+        <FilterPill href="/campaigns?type=workshop" active={type === "workshop"}>Workshops</FilterPill>
+        {sdgFilter && (
+          <span className="ml-2 inline-flex items-center gap-2 rounded-pill border border-primary/30 bg-brand-soft px-3 py-1 text-sm font-semibold text-primary">
+            <SdgIcon goal={sdgFilter} size={20} />
+            SDG {sdgFilter}
+            <Link href="/campaigns" className="ml-1 text-xs underline">clear</Link>
+          </span>
+        )}
+      </div>
+
       <CampaignsGrid campaigns={cards} />
     </div>
   );
@@ -71,10 +84,10 @@ function FilterPill({
   return (
     <Link
       href={href}
-      className={`rounded-full border px-4 py-1.5 text-sm font-medium transition-colors ${
+      className={`rounded-pill border px-4 py-1.5 text-sm font-semibold transition-colors ${
         active
-          ? "border-primary bg-primary/10 text-primary"
-          : "text-muted-foreground hover:text-foreground"
+          ? "border-primary bg-brand-soft text-primary"
+          : "border-border text-text-secondary hover:text-body hover:border-foreground/30"
       }`}
     >
       {children}

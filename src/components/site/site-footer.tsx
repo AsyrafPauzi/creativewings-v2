@@ -1,98 +1,85 @@
 import Link from "next/link";
-import { Mail } from "lucide-react";
+import { Mail, Globe } from "lucide-react";
+
+import { Logo } from "@/components/brand/logo";
+
+const SECTIONS: { title: string; links: { href: string; label: string }[] }[] = [
+  {
+    title: "Discover",
+    links: [
+      { href: "/campaigns", label: "Campaigns" },
+      { href: "/sustainable-development-goals", label: "SDG Goals" },
+      { href: "/brand-story", label: "Brand Story" },
+      { href: "/press", label: "Press" },
+      { href: "/about", label: "About" },
+    ],
+  },
+  {
+    title: "For You",
+    links: [
+      { href: "/sign-up", label: "Join as Contestant" },
+      { href: "/sign-up?role=creator", label: "Join as Creator" },
+      { href: "/sign-up?role=organizer", label: "Run a Campaign" },
+      { href: "/creators", label: "Browse Creators" },
+    ],
+  },
+  {
+    title: "Support",
+    links: [
+      { href: "/contact", label: "Contact" },
+      { href: "/legal/terms", label: "Terms & Conditions" },
+      { href: "/pdpa", label: "Privacy & PDPA Notice" },
+      { href: "/dashboard/privacy", label: "Manage my data" },
+      { href: "/legal/refunds", label: "Refunds" },
+      { href: "/legal/service-delivery", label: "Service Delivery" },
+    ],
+  },
+];
 
 export function SiteFooter() {
   return (
-    <footer className="border-t bg-[#0d0d12] text-white">
-      <div className="container py-14">
-        <div className="grid gap-10 md:grid-cols-3">
+    <footer className="bg-foreground text-white">
+      <div className="cw-container py-16">
+        <div className="grid gap-12 md:grid-cols-[2fr_repeat(3,1fr)]">
           <div>
-            <Link href="/" className="flex items-center gap-2">
-              <span className="grid h-9 w-9 place-items-center rounded-lg cw-gradient-bg font-bold">
-                CW
-              </span>
-              <span className="font-semibold">Creative Wings</span>
-            </Link>
-            <p className="mt-5 text-2xl font-semibold leading-tight md:text-3xl">
-              &ldquo;Together, We Help Young Talents Soar&rdquo;
+            <Logo wordmark="bilingual" size={44} />
+            <p className="mt-5 max-w-sm text-base font-semibold leading-snug">
+              &ldquo;Together, we help young talents soar.&rdquo;
             </p>
-          </div>
-
-          <div className="md:text-center">
-            <h4 className="text-xs font-semibold uppercase tracking-[0.2em] text-white/60">
-              Discover
-            </h4>
-            <ul className="mt-4 space-y-2 text-sm text-white/80">
-              <li>
-                <Link href="/sustainable-development-goals" className="hover:text-white">
-                  Sustainable Development Goals
-                </Link>
-              </li>
-              <li>
-                <Link href="/brand-story" className="hover:text-white">
-                  Brand Story
-                </Link>
-              </li>
-              <li>
-                <Link href="/activities" className="hover:text-white">
-                  Activities
-                </Link>
-              </li>
-              <li>
-                <Link href="/competitions" className="hover:text-white">
-                  Competitions
-                </Link>
-              </li>
-            </ul>
-          </div>
-
-          <div className="md:text-right">
-            <h4 className="text-xs font-semibold uppercase tracking-[0.2em] text-white/60">
-              Let&apos;s chat
-            </h4>
-            <a
-              href="mailto:hello@creativewings.asia"
-              className="mt-4 inline-flex items-center gap-2 text-sm hover:text-white"
-            >
-              <Mail className="h-4 w-4" /> hello@creativewings.asia
-            </a>
-            <div className="mt-6">
-              <Link
-                href="/sign-up?role=business"
-                className="inline-flex items-center rounded-full border border-white/20 px-5 py-2 text-sm font-semibold transition-colors hover:bg-white hover:text-[#0d0d12]"
-              >
-                Run a campaign
-              </Link>
+            <p className="mt-3 max-w-sm text-sm text-white/70">
+              Creative Wings is Malaysia&apos;s national platform for art competitions, school activities, and creator portfolios — connecting students, educators, and brands with purpose.
+            </p>
+            <div className="mt-6 flex flex-wrap gap-4 text-sm text-white/80">
+              <a href="mailto:hello@creativewings.asia" className="inline-flex items-center gap-2 hover:text-white">
+                <Mail className="h-4 w-4" /> hello@creativewings.asia
+              </a>
+              <a href="https://creativewings.asia" target="_blank" rel="noreferrer" className="inline-flex items-center gap-2 hover:text-white">
+                <Globe className="h-4 w-4" /> creativewings.asia
+              </a>
             </div>
           </div>
+
+          {SECTIONS.map((section) => (
+            <div key={section.title}>
+              <h4 className="text-xs font-bold uppercase tracking-[0.2em] text-white/50">
+                {section.title}
+              </h4>
+              <ul className="mt-4 space-y-2.5 text-sm text-white/80">
+                {section.links.map((l) => (
+                  <li key={l.href}>
+                    <Link href={l.href} className="hover:text-white">
+                      {l.label}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))}
         </div>
 
-        <div className="mt-12 flex flex-col items-start justify-between gap-4 border-t border-white/10 pt-6 text-xs text-white/60 md:flex-row md:items-center">
-          <p>
-            Copyright © {new Date().getFullYear()} Yibon Plt (202004002939) — Creative Wings. All rights reserved.
-          </p>
-          <ul className="flex flex-wrap gap-x-5 gap-y-2">
-            <li>
-              <Link href="/legal/service-delivery" className="hover:text-white">
-                Service Delivery Policy
-              </Link>
-            </li>
-            <li>
-              <Link href="/legal/terms" className="hover:text-white">
-                Terms &amp; Conditions
-              </Link>
-            </li>
-            <li>
-              <Link href="/legal/privacy" className="hover:text-white">
-                Privacy Policy
-              </Link>
-            </li>
-            <li>
-              <Link href="/legal/refunds" className="hover:text-white">
-                Refund &amp; Returns Policy
-              </Link>
-            </li>
-          </ul>
+        <div className="mt-12 flex flex-col items-start justify-between gap-3 border-t border-white/10 pt-6 text-xs text-white/55 md:flex-row md:items-center">
+          <p>© {new Date().getFullYear()} Yibon Plt (202004002939) — Creative Wings. All rights reserved.</p>
+          <p>Made with care in Malaysia · EN / 中文</p>
         </div>
       </div>
     </footer>

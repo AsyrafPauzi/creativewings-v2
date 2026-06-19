@@ -23,8 +23,8 @@ export default async function MySubmissionsPage() {
   return (
     <div className="space-y-6">
       <header>
-        <h1 className="text-3xl font-bold tracking-tight">My submissions</h1>
-        <p className="text-muted-foreground">
+        <h1 className="text-3xl font-extrabold tracking-tight text-body">My submissions</h1>
+        <p className="text-text-secondary">
           Every entry you&apos;ve submitted across all campaigns.
         </p>
       </header>
@@ -51,11 +51,11 @@ export default async function MySubmissionsPage() {
                   <div>
                     <Link
                       href={camp ? `/campaigns/${camp.slug}` : "#"}
-                      className="font-medium hover:underline"
+                      className="font-bold text-body hover:text-primary"
                     >
                       {camp?.title ?? "Submission"}
                     </Link>
-                    <div className="text-xs text-muted-foreground">
+                    <div className="text-xs text-text-muted">
                       {s.student_name ? `For ${s.student_name} · ` : ""}
                       Submitted {formatDate(s.created_at)}
                       {s.score != null ? ` · Score ${s.score}` : ""}

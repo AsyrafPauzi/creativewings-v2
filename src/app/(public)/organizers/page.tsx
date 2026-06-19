@@ -1,35 +1,36 @@
 import Link from "next/link";
+import { BadgeCheck } from "lucide-react";
 
-import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { createClient } from "@/lib/supabase/server";
 
-export const metadata = { title: "Organisers" };
+export const metadata = { title: "Organizers" };
 export const revalidate = 120;
 
 export default async function OrganizersDirectoryPage() {
   const supabase = await createClient();
   const { data: organizers } = await supabase
     .from("organizers")
-    .select("id, slug, business_name, logo_url, banner_url, industry, about, is_verified, city, country")
+    .select("id, slug, name, logo_url, banner_url, industry, about, is_verified, city, country")
     .eq("is_listed", true)
-    .order("business_name");
+    .order("name");
 
   return (
-    <div className="container py-14">
+    <div className="cw-container py-14 md:py-20">
       <header className="mb-10">
-        <h1 className="text-4xl font-bold tracking-tight">Organisers</h1>
-        <p className="mt-2 text-muted-foreground">
-          The businesses, NGOs and institutions running campaigns on Creative Wings.
+        <span className="text-xs font-bold uppercase tracking-[0.25em] text-primary">Trusted partners</span>
+        <h1 className="mt-3 text-4xl font-extrabold tracking-tight text-body md:text-5xl">Organizers</h1>
+        <p className="mt-3 max-w-2xl text-text-secondary">
+          The brands, NGOs, and institutions running campaigns on Creative Wings.
         </p>
       </header>
 
       {!organizers || organizers.length === 0 ? (
         <Card className="border-dashed">
           <CardHeader>
-            <CardTitle>No listed organisers yet</CardTitle>
+            <CardTitle>No listed organizers yet</CardTitle>
             <CardDescription>
-              Organisers appear here once they publish their first campaign.
+              Organizers appear here once they publish their first campaign.
             </CardDescription>
           </CardHeader>
         </Card>
@@ -37,26 +38,26 @@ export default async function OrganizersDirectoryPage() {
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
           {organizers.map((o) => (
             <Link key={o.id} href={`/organizer/${o.slug}`} className="group">
-              <Card className="overflow-hidden transition-shadow group-hover:shadow-lg">
+              <Card className="overflow-hidden transition-all group-hover:-translate-y-0.5 group-hover:shadow-elevated">
                 <div
                   className="h-28 cw-gradient-bg bg-cover bg-center"
                   style={o.banner_url ? { backgroundImage: `url(${o.banner_url})` } : undefined}
                 />
                 <CardHeader>
-                  <div className="-mt-12 mb-2 grid h-16 w-16 place-items-center rounded-xl border bg-card text-lg font-bold text-primary shadow-sm">
+                  <div className="-mt-12 mb-2 grid h-16 w-16 place-items-center rounded-md border bg-card text-lg font-extrabold text-secondary shadow-soft">
                     {o.logo_url ? (
                       // eslint-disable-next-line @next/next/no-img-element
-                      <img src={o.logo_url} alt={o.business_name} className="h-full w-full rounded-xl object-cover" />
+                      <img src={o.logo_url} alt={o.name} className="h-full w-full rounded-md object-cover" />
                     ) : (
-                      o.business_name.slice(0, 2).toUpperCase()
+                      o.name.slice(0, 2).toUpperCase()
                     )}
                   </div>
                   <CardTitle className="flex items-center gap-2 text-lg">
-                    {o.business_name}
+                    {o.name}
                     {o.is_verified && (
-                      <Badge variant="success" className="text-[10px]">
-                        Verified
-                      </Badge>
+                      <span className="inline-flex items-center gap-1 text-success text-xs">
+                        <BadgeCheck className="h-3.5 w-3.5" /> Verified
+                      </span>
                     )}
                   </CardTitle>
                   {(o.industry || o.city) && (
@@ -68,7 +69,7 @@ export default async function OrganizersDirectoryPage() {
                   )}
                 </CardHeader>
                 {o.about && (
-                  <CardContent className="line-clamp-3 text-sm text-muted-foreground">
+                  <CardContent className="line-clamp-3 text-sm text-text-secondary">
                     {o.about}
                   </CardContent>
                 )}

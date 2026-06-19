@@ -3,26 +3,27 @@ import { Plus } from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { requireRole } from "@/lib/auth";
 import { createClient } from "@/lib/supabase/server";
 import { formatCurrency, formatDate, timeUntil } from "@/lib/utils";
+import type { CWCampaignType } from "@/lib/supabase/database.types";
 
 export const metadata = { title: "Campaigns" };
 
+const CAMPAIGN_TYPE_LABEL: Record<CWCampaignType, string> = {
+  competition: "Competition",
+  activity: "Activity",
+  workshop: "Workshop",
+};
+
 export default async function CampaignsListPage() {
-  const { user } = await requireRole("business");
+  const { user } = await requireRole("organizer");
   const supabase = await createClient();
 
   const { data: organizer } = await supabase
     .from("organizers")
-    .select("id, business_name")
+    .select("id, name")
     .eq("owner_id", user.id)
     .maybeSingle();
 
@@ -30,14 +31,14 @@ export default async function CampaignsListPage() {
     return (
       <Card>
         <CardHeader>
-          <CardTitle>Set up your organisation first</CardTitle>
+          <CardTitle>Set up your organization first</CardTitle>
           <CardDescription>
-            Add your organisation details before creating campaigns.
+            Add your organization details before creating campaigns.
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <Button asChild variant="brand">
-            <Link href="/dashboard/organizer">Set up organisation</Link>
+          <Button asChild>
+            <Link href="/dashboard/organizer">Set up organization</Link>
           </Button>
         </CardContent>
       </Card>
@@ -56,12 +57,12 @@ export default async function CampaignsListPage() {
     <div className="space-y-6">
       <header className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">Campaigns</h1>
-          <p className="text-muted-foreground">
-            All campaigns and activities owned by {organizer.business_name}.
+          <h1 className="text-3xl font-extrabold tracking-tight text-body">Campaigns</h1>
+          <p className="text-text-secondary">
+            All campaigns and activities owned by {organizer.name}.
           </p>
         </div>
-        <Button asChild variant="brand">
+        <Button asChild size="lg">
           <Link href="/dashboard/campaigns/new">
             <Plus className="h-4 w-4" /> New campaign
           </Link>
@@ -77,7 +78,7 @@ export default async function CampaignsListPage() {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <Button asChild variant="brand">
+            <Button asChild>
               <Link href="/dashboard/campaigns/new">Create your first campaign</Link>
             </Button>
           </CardContent>
@@ -86,16 +87,16 @@ export default async function CampaignsListPage() {
         <Card>
           <ul className="divide-y">
             {campaigns.map((c) => (
-              <li key={c.id} className="flex items-center justify-between p-4">
+              <li key={c.id} className="flex items-center justify-between gap-4 p-4">
                 <div className="min-w-0">
                   <Link
                     href={`/dashboard/campaigns/${c.id}`}
-                    className="text-base font-medium hover:underline"
+                    className="line-clamp-1 text-base font-bold text-body hover:text-primary"
                   >
                     {c.title}
                   </Link>
-                  <div className="text-xs text-muted-foreground">
-                    {c.type === "competition" ? "Competition" : "Activity"} ·{" "}
+                  <div className="mt-0.5 text-xs text-text-secondary">
+                    {CAMPAIGN_TYPE_LABEL[c.type as CWCampaignType] ?? c.type} ·{" "}
                     {formatCurrency(c.entry_fee, c.currency)} ·{" "}
                     {c.submissions_count ?? 0} submission
                     {c.submissions_count === 1 ? "" : "s"}
@@ -108,7 +109,7 @@ export default async function CampaignsListPage() {
                     ) : null}
                   </div>
                 </div>
-                <div className="flex items-center gap-3">
+                <div className="flex items-center gap-3 shrink-0">
                   <Badge
                     variant={
                       c.status === "published"

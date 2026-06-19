@@ -1,7 +1,8 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  experimental: {
-    typedRoutes: false,
+  typedRoutes: false,
+  outputFileTracingIncludes: {
+    "/*": ["./supabase/templates/verify-email.html"],
   },
   images: {
     remotePatterns: [

@@ -4,7 +4,7 @@ import { requireRole } from "@/lib/auth";
 export const metadata = { title: "Reports" };
 
 export default async function ReportsPage() {
-  await requireRole("business");
+  await requireRole("organizer");
   return (
     <ComingSoon
       title="Reports"

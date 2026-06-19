@@ -14,13 +14,40 @@ const PUBLIC_PATHS = [
   "/sign-up",
   "/forgot-password",
   "/reset-password",
+  "/verify-email",
+  "/magic-link",
   "/auth/callback",
 ];
 
 const AUTH_ONLY_PATHS = ["/dashboard", "/onboarding", "/settings"];
+const AUTH_ENTRY_PATHS = ["/sign-in", "/sign-up"];
+
+function isPasswordRecoveryPath(request: NextRequest) {
+  const { pathname, searchParams } = request.nextUrl;
+  if (pathname === "/reset-password" || pathname.startsWith("/reset-password/")) {
+    return true;
+  }
+  return pathname === "/auth/callback" && searchParams.get("next") === "/reset-password";
+}
+
+function isAppEmailVerificationPath(request: NextRequest) {
+  const { pathname, searchParams } = request.nextUrl;
+  return (
+    pathname === "/auth/callback" &&
+    searchParams.get("type") === "email_verification" &&
+    Boolean(searchParams.get("token"))
+  );
+}
+
+function isVerifyEmailPath(pathname: string) {
+  return pathname === "/verify-email" || pathname.startsWith("/verify-email/");
+}
 
 function isPublicPath(pathname: string) {
   if (PUBLIC_PATHS.includes(pathname)) return true;
+  if (pathname.startsWith("/reset-password/")) return true;
+  if (pathname.startsWith("/verify-email/")) return true;
+  if (pathname.startsWith("/magic-link/")) return true;
   if (pathname.startsWith("/campaigns/")) return true;
   if (pathname.startsWith("/organizer/")) return true;
   if (pathname.startsWith("/profile/")) return true;
@@ -67,23 +94,31 @@ export async function updateSession(request: NextRequest) {
     return NextResponse.redirect(redirectUrl);
   }
 
-  if (user && (pathname === "/sign-in" || pathname === "/sign-up")) {
-    const redirectUrl = request.nextUrl.clone();
-    redirectUrl.pathname = "/dashboard";
-    return NextResponse.redirect(redirectUrl);
-  }
-
-  // Onboarding gate: if logged in but no role yet, force the onboarding flow.
-  if (user && pathname.startsWith("/dashboard")) {
+  if (user) {
     const { data: profile } = await supabase
       .from("profiles")
-      .select("role, onboarded_at")
+      .select("onboarded_at")
       .eq("id", user.id)
       .maybeSingle();
 
-    if (!profile || !profile.onboarded_at) {
+    const onboardingComplete = Boolean(profile?.onboarded_at);
+    const isOnboardingPath = pathname.startsWith("/onboarding");
+    const isAuthEntryPath = AUTH_ENTRY_PATHS.includes(pathname);
+    const isPasswordRecovery = isPasswordRecoveryPath(request);
+    const isEmailVerification = isAppEmailVerificationPath(request) || isVerifyEmailPath(pathname);
+
+    if (!onboardingComplete && !isOnboardingPath && !isPasswordRecovery && !isEmailVerification) {
       const redirectUrl = request.nextUrl.clone();
       redirectUrl.pathname = "/onboarding";
+      if (isAuthEntryPath) {
+        redirectUrl.searchParams.set("registered", "1");
+      }
+      return NextResponse.redirect(redirectUrl);
+    }
+
+    if (onboardingComplete && isAuthEntryPath) {
+      const redirectUrl = request.nextUrl.clone();
+      redirectUrl.pathname = "/dashboard";
       return NextResponse.redirect(redirectUrl);
     }
   }

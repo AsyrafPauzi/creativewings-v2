@@ -30,8 +30,8 @@ export default async function WalletPage() {
   return (
     <div className="space-y-6">
       <header>
-        <h1 className="text-3xl font-bold tracking-tight">Wallet</h1>
-        <p className="text-muted-foreground">Credits, refunds, and sponsor grants.</p>
+        <h1 className="text-3xl font-extrabold tracking-tight text-body">Wallet</h1>
+        <p className="text-text-secondary">Credits, refunds, and sponsor grants.</p>
       </header>
 
       <Card>
@@ -50,14 +50,14 @@ export default async function WalletPage() {
         </CardHeader>
         <CardContent>
           {!entries || entries.length === 0 ? (
-            <p className="text-sm text-muted-foreground">No transactions yet.</p>
+            <p className="text-sm text-text-secondary">No transactions yet.</p>
           ) : (
             <ul className="divide-y">
               {entries.map((e) => (
                 <li key={e.id} className="flex items-center justify-between py-3">
                   <div>
-                    <div className="text-sm font-medium capitalize">{e.reason.replace(/_/g, " ")}</div>
-                    <div className="text-xs text-muted-foreground">{formatDate(e.created_at)}</div>
+                    <div className="text-sm font-bold capitalize text-body">{e.reason.replace(/_/g, " ")}</div>
+                    <div className="text-xs text-text-muted">{formatDate(e.created_at)}</div>
                   </div>
                   <div className="flex items-center gap-2">
                     <Badge variant={e.entry_type === "credit" ? "success" : "destructive"}>

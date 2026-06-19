@@ -8,6 +8,13 @@ import { formatDate } from "@/lib/utils";
 
 export const metadata = { title: "Users" };
 
+const ROLE_TONES: Record<string, "default" | "secondary" | "info" | "soft"> = {
+  contestant: "soft",
+  creator: "info",
+  organizer: "secondary",
+  admin: "default",
+};
+
 export default async function AdminUsersPage() {
   const { profile } = await requireUser();
   if (!profile.is_admin) redirect("/dashboard");
@@ -15,29 +22,30 @@ export default async function AdminUsersPage() {
   const supabase = await createClient();
   const { data: users } = await supabase
     .from("profiles")
-    .select("id, email, full_name, role, is_admin, created_at")
+    .select("id, email, full_name, role, is_admin, age_category, created_at")
     .order("created_at", { ascending: false })
     .limit(100);
 
   return (
     <div className="space-y-6">
       <header>
-        <h1 className="text-3xl font-bold tracking-tight">Users</h1>
-        <p className="text-muted-foreground">100 most recent accounts.</p>
+        <h1 className="text-3xl font-extrabold tracking-tight text-body">Users</h1>
+        <p className="text-text-secondary">100 most recent accounts.</p>
       </header>
 
       <Card>
         <ul className="divide-y">
           {(users ?? []).map((u) => (
-            <li key={u.id} className="flex items-center justify-between p-4">
-              <div>
-                <div className="font-medium">{u.full_name || u.email}</div>
-                <div className="text-xs text-muted-foreground">
+            <li key={u.id} className="flex items-center justify-between gap-4 p-4">
+              <div className="min-w-0">
+                <div className="line-clamp-1 font-bold text-body">{u.full_name || u.email}</div>
+                <div className="text-xs text-text-muted">
                   {u.email} · Joined {formatDate(u.created_at)}
+                  {u.age_category ? ` · ${u.age_category.replace(/_/g, " ")}` : ""}
                 </div>
               </div>
-              <div className="flex items-center gap-2">
-                <Badge variant="secondary" className="capitalize">{u.role}</Badge>
+              <div className="flex items-center gap-2 shrink-0">
+                <Badge variant={ROLE_TONES[u.role] ?? "soft"} className="capitalize">{u.role}</Badge>
                 {u.is_admin && <Badge variant="default">Admin</Badge>}
               </div>
             </li>

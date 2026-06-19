@@ -7,6 +7,7 @@ import { CampaignForm } from "@/components/campaigns/campaign-form";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { requireRole } from "@/lib/auth";
 import { createClient } from "@/lib/supabase/server";
+import { loadSubCategories } from "@/lib/sub-categories";
 import { setCampaignStatusAction, updateCampaignAction } from "../actions";
 
 export default async function CampaignDetailPage({
@@ -15,8 +16,9 @@ export default async function CampaignDetailPage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
-  await requireRole("business");
+  await requireRole("organizer");
   const supabase = await createClient();
+  const subCategories = await loadSubCategories();
 
   const { data: campaign } = await supabase
     .from("campaigns")
@@ -62,7 +64,7 @@ export default async function CampaignDetailPage({
               "use server";
               await setCampaignStatusAction(campaign.id, "published");
             }}>
-              <Button type="submit" variant="brand">Publish</Button>
+              <Button type="submit">Publish</Button>
             </form>
           ) : (
             <form action={async () => {
@@ -97,7 +99,12 @@ export default async function CampaignDetailPage({
         </CardContent>
       </Card>
 
-      <CampaignForm action={action} defaults={campaign} submitLabel="Save changes" />
+      <CampaignForm
+        action={action}
+        defaults={campaign}
+        submitLabel="Save changes"
+        subCategories={subCategories}
+      />
     </div>
   );
 }

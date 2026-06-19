@@ -1,6 +1,5 @@
-import Link from "next/link";
-
 import { SignInForm } from "./sign-in-form";
+import { AuthFormHeader, AuthSplitPage } from "@/components/auth/auth-ui";
 
 export const metadata = { title: "Sign in" };
 
@@ -10,21 +9,14 @@ export default async function SignInPage({
   searchParams: Promise<{ next?: string }>;
 }) {
   const { next } = await searchParams;
+
   return (
-    <div>
-      <h1 className="text-3xl font-bold tracking-tight">Welcome back</h1>
-      <p className="mt-2 text-muted-foreground">
-        Sign in to manage your campaigns, submissions, and certificates.
-      </p>
-      <div className="mt-8">
-        <SignInForm next={next ?? "/dashboard"} />
-      </div>
-      <p className="mt-6 text-sm text-muted-foreground">
-        Don&apos;t have an account?{" "}
-        <Link className="font-medium text-primary hover:underline" href="/sign-up">
-          Create one
-        </Link>
-      </p>
-    </div>
+    <AuthSplitPage variant="sign-in">
+      <AuthFormHeader
+        title="Welcome back."
+        subtitle="Enter your email and password to land back in your studio."
+      />
+      <SignInForm next={next ?? "/dashboard"} />
+    </AuthSplitPage>
   );
 }

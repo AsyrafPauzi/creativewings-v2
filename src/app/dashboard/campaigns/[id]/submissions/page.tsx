@@ -14,7 +14,7 @@ export default async function CampaignSubmissionsPage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
-  await requireRole("business");
+  await requireRole("organizer");
   const supabase = await createClient();
 
   const { data: campaign } = await supabase
