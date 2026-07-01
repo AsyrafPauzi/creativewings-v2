@@ -1,5 +1,6 @@
 import Link from "next/link";
 
+import { PageMotion } from "@/components/site/animations/page-motion";
 import { CampaignsGrid } from "@/components/site/campaigns-grid";
 import type { CampaignCardData } from "@/components/site/campaign-card";
 import { SdgIcon } from "@/components/site/sdg-icons";
@@ -40,15 +41,16 @@ export default async function CampaignsListPage({
   }));
 
   return (
+    <PageMotion hero>
     <div className="cw-container py-14 md:py-20">
-      <header className="mb-8 flex flex-col gap-3">
-        <span className="text-xs font-bold uppercase tracking-[0.25em] text-primary">All campaigns</span>
-        <h1 className="text-4xl font-extrabold tracking-tight text-body md:text-5xl">
+      <header data-motion="hero" className="mb-8 flex flex-col gap-3">
+        <span data-motion="hero-item" className="text-xs font-bold uppercase tracking-[0.25em] text-primary">All campaigns</span>
+        <h1 data-motion="hero-item" className="text-4xl font-extrabold tracking-tight text-body md:text-5xl">
           {sdgFilter
             ? `Campaigns aligned to SDG ${sdgFilter}: ${SDG_GOALS[sdgFilter]?.title ?? ""}`
             : "Discover open campaigns"}
         </h1>
-        <p className="max-w-2xl text-text-secondary">
+        <p data-motion="hero-item" className="max-w-2xl text-text-secondary">
           Open competitions and creative activities you can join right now — sorted by deadline.
         </p>
       </header>
@@ -69,6 +71,7 @@ export default async function CampaignsListPage({
 
       <CampaignsGrid campaigns={cards} />
     </div>
+    </PageMotion>
   );
 }
 
@@ -84,6 +87,7 @@ function FilterPill({
   return (
     <Link
       href={href}
+      data-motion="pill"
       className={`rounded-pill border px-4 py-1.5 text-sm font-semibold transition-colors ${
         active
           ? "border-primary bg-brand-soft text-primary"

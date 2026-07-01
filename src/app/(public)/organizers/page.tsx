@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { BadgeCheck } from "lucide-react";
 
+import { PageMotion } from "@/components/site/animations/page-motion";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { createClient } from "@/lib/supabase/server";
 
@@ -16,11 +17,12 @@ export default async function OrganizersDirectoryPage() {
     .order("name");
 
   return (
+    <PageMotion hero>
     <div className="cw-container py-14 md:py-20">
-      <header className="mb-10">
-        <span className="text-xs font-bold uppercase tracking-[0.25em] text-primary">Trusted partners</span>
-        <h1 className="mt-3 text-4xl font-extrabold tracking-tight text-body md:text-5xl">Organizers</h1>
-        <p className="mt-3 max-w-2xl text-text-secondary">
+      <header data-motion="hero" className="mb-10">
+        <span data-motion="hero-item" className="text-xs font-bold uppercase tracking-[0.25em] text-primary">Trusted partners</span>
+        <h1 data-motion="hero-item" className="mt-3 text-4xl font-extrabold tracking-tight text-body md:text-5xl">Organizers</h1>
+        <p data-motion="hero-item" className="mt-3 max-w-2xl text-text-secondary">
           The brands, NGOs, and institutions running campaigns on Creative Wings.
         </p>
       </header>
@@ -37,8 +39,8 @@ export default async function OrganizersDirectoryPage() {
       ) : (
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
           {organizers.map((o) => (
-            <Link key={o.id} href={`/organizer/${o.slug}`} className="group">
-              <Card className="overflow-hidden transition-all group-hover:-translate-y-0.5 group-hover:shadow-elevated">
+            <Link key={o.id} href={`/organizer/${o.slug}`} className="group" data-motion="card">
+              <Card className="overflow-hidden transition-all group-hover:-translate-y-0.5 group-hover:shadow-elevated will-change-transform">
                 <div
                   className="h-28 cw-gradient-bg bg-cover bg-center"
                   style={o.banner_url ? { backgroundImage: `url(${o.banner_url})` } : undefined}
@@ -79,5 +81,6 @@ export default async function OrganizersDirectoryPage() {
         </div>
       )}
     </div>
+    </PageMotion>
   );
 }

@@ -22,6 +22,7 @@ import {
 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
+import { PageMotion } from "@/components/site/animations/page-motion";
 
 type LegalSection = {
   id: string;
@@ -299,27 +300,28 @@ export default async function LegalDocPage({
   const Icon = meta.icon;
 
   return (
+    <PageMotion hero>
     <div className="bg-background">
-      <section className="relative overflow-hidden bg-[linear-gradient(135deg,#F05A7E_0%,#A55EAE_55%,#125B9A_100%)] text-white">
-        <div className="pointer-events-none absolute -left-28 -top-28 h-96 w-96 rounded-full bg-white/10" />
-        <div className="pointer-events-none absolute -right-24 bottom-8 h-[28rem] w-[28rem] rounded-full bg-white/10" />
+      <section data-motion="hero" className="relative overflow-hidden bg-[linear-gradient(135deg,#F05A7E_0%,#A55EAE_55%,#125B9A_100%)] text-white">
+        <div data-motion-blob className="pointer-events-none absolute -left-28 -top-28 h-96 w-96 rounded-full bg-white/10 will-change-transform" />
+        <div data-motion-blob className="pointer-events-none absolute -right-24 bottom-8 h-[28rem] w-[28rem] rounded-full bg-white/10 will-change-transform" />
         <div className="pointer-events-none absolute left-[48%] top-16 grid h-14 w-14 rotate-12 place-items-center rounded-full bg-[#FFF3D0] text-[#0B1320] shadow-elevated">
           <Sparkles className="h-6 w-6" aria-hidden />
         </div>
 
         <div className="cw-container relative grid gap-10 py-20 lg:grid-cols-[1fr_360px] lg:items-end">
           <div className="max-w-4xl">
-            <span className="inline-flex items-center gap-2 rounded-pill border border-white/30 bg-white/15 px-3 py-1.5 text-[10px] font-extrabold uppercase tracking-[0.22em] text-white/90">
+            <span data-motion="hero-item" className="inline-flex items-center gap-2 rounded-pill border border-white/30 bg-white/15 px-3 py-1.5 text-[10px] font-extrabold uppercase tracking-[0.22em] text-white/90">
               <Icon className="h-3.5 w-3.5" aria-hidden />
               {meta.eyebrow}
             </span>
-            <h1 className="mt-5 text-5xl font-black italic leading-[0.95] tracking-tight md:text-7xl">
+            <h1 data-motion="hero-item" className="mt-5 text-5xl font-black italic leading-[0.95] tracking-tight md:text-7xl">
               {meta.title}
             </h1>
-            <p className="mt-5 max-w-3xl text-base font-medium leading-relaxed text-white/86 md:text-lg">
+            <p data-motion="hero-item" className="mt-5 max-w-3xl text-base font-medium leading-relaxed text-white/86 md:text-lg">
               {meta.description}
             </p>
-            <div className="mt-7 flex flex-wrap gap-3">
+            <div data-motion="hero-cta" className="mt-7 flex flex-wrap gap-3">
               <Button asChild className="rounded-pill bg-white text-body hover:bg-white/90">
                 <Link href="/sign-up">
                   Accept & join Creative Wings <ArrowRight className="h-4 w-4" />
@@ -484,6 +486,7 @@ export default async function LegalDocPage({
         </div>
       </section>
     </div>
+    </PageMotion>
   );
 }
 
@@ -495,7 +498,7 @@ function LegalSectionCard({
   index: number;
 }) {
   return (
-    <section id={section.id} className="scroll-mt-24 rounded-[24px] border bg-card p-6 shadow-soft md:p-7">
+    <section id={section.id} data-motion="section" className="scroll-mt-24 rounded-[24px] border bg-card p-6 shadow-soft md:p-7 will-change-transform">
       <div className="flex flex-col gap-4 md:flex-row md:items-start">
         <div className="grid h-12 w-12 shrink-0 place-items-center rounded-2xl bg-brand-soft text-lg font-black italic text-primary">
           {String(index + 1).padStart(2, "0")}

@@ -107,4 +107,16 @@
   .cw-container {
     @apply mx-auto w-full max-w-[1280px] px-4 md:px-8;
   }
+  .will-change-transform {
+    will-change: transform;
+    backface-visibility: hidden;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .gsap-scope [data-gsap],
+  [data-hero] {
+    animation: none !important;
+    transition: none !important;
+  }
 }

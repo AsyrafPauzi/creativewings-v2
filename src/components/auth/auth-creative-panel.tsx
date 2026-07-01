@@ -17,14 +17,16 @@ export function AuthCreativePanel({ variant }: { variant: AuthCreativeVariant })
 
   return (
     <div
+      data-auth-creative
       className="relative hidden min-h-full w-full flex-col justify-between overflow-hidden px-16 py-14 text-white md:flex"
       style={gradientStyle(config.gradient)}
     >
       {glows.map((glow, i) => (
         <div
           key={i}
+          data-auth-glow
           aria-hidden
-          className={cn("pointer-events-none absolute", glow.className)}
+          className={cn("pointer-events-none absolute will-change-transform", glow.className)}
           style={{ background: glow.background }}
         />
       ))}
@@ -41,7 +43,7 @@ export function AuthCreativePanel({ variant }: { variant: AuthCreativeVariant })
       ))}
 
       <div className="relative flex flex-wrap items-center gap-2.5 text-xs font-semibold uppercase tracking-[0.075em] text-white/80">
-        <span className="inline-flex items-center gap-2 rounded-pill border border-white/40 bg-white/15 px-3 py-1.5 text-[11px] font-extrabold tracking-[0.18em] text-white">
+        <span data-auth-creative-item className="inline-flex items-center gap-2 rounded-pill border border-white/40 bg-white/15 px-3 py-1.5 text-[11px] font-extrabold tracking-[0.18em] text-white">
           <TagIcon className="h-3.5 w-3.5" aria-hidden />
           {config.tag}
         </span>
@@ -51,17 +53,17 @@ export function AuthCreativePanel({ variant }: { variant: AuthCreativeVariant })
       </div>
 
       <div className="relative max-w-[592px] space-y-[22px]">
-        <h2 className="whitespace-pre-line text-[104px] font-black italic leading-[0.92] tracking-tight">
+        <h2 data-auth-creative-item className="whitespace-pre-line text-[104px] font-black italic leading-[0.92] tracking-tight">
           {config.headline}
         </h2>
 
         {config.kicker && (
-          <p className="text-xs font-extrabold uppercase tracking-[0.17em] text-[#FFE6A3]">
+          <p data-auth-creative-item className="text-xs font-extrabold uppercase tracking-[0.17em] text-[#FFE6A3]">
             {config.kicker}
           </p>
         )}
 
-        <p className="max-w-[592px] text-[19px] font-medium leading-[1.45] text-white/90">
+        <p data-auth-creative-item className="max-w-[592px] text-[19px] font-medium leading-[1.45] text-white/90">
           {config.body}
         </p>
 
@@ -70,7 +72,8 @@ export function AuthCreativePanel({ variant }: { variant: AuthCreativeVariant })
             {config.testimonials.map((t) => (
               <div
                 key={t.num}
-                className="rounded-xl border border-white/20 bg-white/10 p-4 backdrop-blur-sm"
+                data-auth-ticket
+                className="rounded-xl border border-white/20 bg-white/10 p-4 backdrop-blur-sm will-change-transform"
               >
                 <div className="flex items-start gap-3">
                   <span className="text-sm font-black text-[#FFE6A3]">{t.num}</span>
@@ -117,7 +120,7 @@ export function AuthCreativePanel({ variant }: { variant: AuthCreativeVariant })
 
       <div className="relative grid grid-cols-3 gap-7">
         {config.stats.map(({ icon: Icon, value, label }) => (
-          <div key={label}>
+          <div key={label} data-auth-stat>
             <div className="flex items-center gap-2">
               <Icon className="h-4 w-4 text-[#FFE6A3]" aria-hidden />
               <span className="text-[30px] font-black italic leading-none tracking-tight">
@@ -156,9 +159,10 @@ const DEFAULT_GLOWS = [
 function Sticker({ icon: Icon, className }: { icon: LucideIcon; className: string }) {
   return (
     <div
+      data-auth-float
       aria-hidden
       className={cn(
-        "pointer-events-none absolute",
+        "pointer-events-none absolute will-change-transform",
         className,
       )}
     >

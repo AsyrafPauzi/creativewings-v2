@@ -17,6 +17,7 @@ import {
   SubmitSection,
   type RelatedCampaign,
 } from "@/components/campaigns/detail-sections";
+import { PageMotion } from "@/components/site/animations/page-motion";
 import { loadSponsorSlot } from "@/lib/sponsor-slots";
 import { createClient } from "@/lib/supabase/server";
 import type {
@@ -180,6 +181,7 @@ export default async function CampaignDetailPage({ params }: PageProps) {
   const criteria = DEFAULT_CRITERIA[campaignType];
 
   return (
+    <PageMotion hero>
     <div className="bg-white">
       <DetailToolbar campaign={{ title: campaign.title, type: campaign.type }} />
       <CampaignHero
@@ -217,5 +219,6 @@ export default async function CampaignDetailPage({ params }: PageProps) {
       </div>
       <BottomCampaignCta campaign={campaign} joinHref={joinHref} />
     </div>
+    </PageMotion>
   );
 }

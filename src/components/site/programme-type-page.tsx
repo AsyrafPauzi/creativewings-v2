@@ -1,5 +1,6 @@
 import Link from "next/link";
 
+import { PageMotion } from "@/components/site/animations/page-motion";
 import { ProgrammeSection, TYPE_META } from "@/components/site/programme-section";
 import { loadTypeBucket } from "@/lib/programmes";
 import type { CWCampaignType } from "@/lib/supabase/database.types";
@@ -35,12 +36,14 @@ export async function ProgrammeTypePage({ type, activeSub }: ProgrammeTypePagePr
         : "border-success/40 bg-background/80 text-success";
 
   return (
+    <PageMotion hero>
     <>
       <section className="relative overflow-hidden">
         <div className="absolute inset-0 -z-10" style={{ backgroundImage: heroBg }} />
-        <div className="cw-container py-20 md:py-24">
+        <div data-motion="hero" className="cw-container py-20 md:py-24">
           <div className="mx-auto flex max-w-3xl flex-col items-center gap-6 text-center">
             <span
+              data-motion="hero-item"
               className={
                 "inline-flex items-center gap-2 rounded-pill border px-3.5 py-1.5 text-xs font-bold uppercase tracking-[0.2em] backdrop-blur " +
                 tonePill
@@ -48,11 +51,11 @@ export async function ProgrammeTypePage({ type, activeSub }: ProgrammeTypePagePr
             >
               <Icon className="h-3.5 w-3.5" /> {meta.eyebrow}
             </span>
-            <h1 className="text-5xl font-extrabold tracking-tight text-body md:text-6xl">
+            <h1 data-motion="hero-item" className="text-5xl font-extrabold tracking-tight text-body md:text-6xl">
               {meta.title}
             </h1>
-            <p className="text-lg text-text-secondary">{meta.sub}</p>
-            <div className="flex items-center gap-2 text-sm text-text-muted">
+            <p data-motion="hero-item" className="text-lg text-text-secondary">{meta.sub}</p>
+            <div data-motion="hero-cta" className="flex items-center gap-2 text-sm text-text-muted">
               <span>Looking for something else?</span>
               <Link
                 href="/programmes"
@@ -75,5 +78,6 @@ export async function ProgrammeTypePage({ type, activeSub }: ProgrammeTypePagePr
         basePath={meta.listHref as "/workshops" | "/competitions" | "/activities"}
       />
     </>
+    </PageMotion>
   );
 }

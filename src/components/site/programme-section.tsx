@@ -216,11 +216,11 @@ export function ProgrammeSection({
       <div className="cw-container py-14 md:py-16">
         <header className="flex flex-col items-start justify-between gap-6 md:flex-row md:items-end">
           <div className="max-w-3xl">
-            <p className={"text-[11px] font-extrabold uppercase tracking-[0.18em] " + tone.text}>
+            <p data-motion="head" className={"text-[11px] font-extrabold uppercase tracking-[0.18em] " + tone.text}>
               {index ? `${String(index).padStart(2, "0")} - ` : ""}
               {copy.eyebrow}
             </p>
-            <h2 className="mt-2 max-w-3xl text-3xl font-extrabold italic leading-tight tracking-[-0.03em] text-body md:text-[42px]">
+            <h2 data-motion="head" className="mt-2 max-w-3xl text-3xl font-extrabold italic leading-tight tracking-[-0.03em] text-body md:text-[42px]">
               {copy.title}
             </h2>
             <p className="mt-2 text-sm text-text-secondary md:text-base">{copy.body}</p>
@@ -315,7 +315,7 @@ function ProgrammeCampaignCard({
   });
 
   return (
-    <article className="group flex min-h-[390px] flex-col overflow-hidden rounded-[18px] border bg-card shadow-[0_14px_30px_rgb(11_19_32/0.08)] transition-all hover:-translate-y-1 hover:shadow-[0_20px_38px_rgb(11_19_32/0.12)]">
+    <article data-motion="card" className="group flex min-h-[390px] flex-col overflow-hidden rounded-[18px] border bg-card shadow-[0_14px_30px_rgb(11_19_32/0.08)] transition-all hover:-translate-y-1 hover:shadow-[0_20px_38px_rgb(11_19_32/0.12)] will-change-transform">
       <Link href={`/campaigns/${campaign.slug}`} className="relative block h-48 overflow-hidden">
         <div
           className={"absolute inset-0 bg-gradient-to-br " + tone.gradient}

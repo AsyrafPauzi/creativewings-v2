@@ -28,6 +28,7 @@ import {
 } from "lucide-react";
 
 import { Logo } from "@/components/brand/logo";
+import { PageMotion } from "@/components/site/animations/page-motion";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -311,6 +312,7 @@ const chips = ["All", "Releases", "Features", "Mentions", "Awards", "Op-eds"];
 
 export default function PressPage() {
   return (
+    <PageMotion hero>
     <div className="overflow-hidden bg-background">
       <HeroSection />
       <PressFeed />
@@ -322,14 +324,15 @@ export default function PressPage() {
       <AwardsStrip />
       <NewsletterRibbon />
     </div>
+    </PageMotion>
   );
 }
 
 function HeroSection() {
   return (
-    <section className="relative isolate overflow-hidden bg-[linear-gradient(135deg,#F05A7E_0%,#A55EAE_55%,#125B9A_100%)]">
-      <div className="absolute -left-28 -top-28 h-96 w-96 rounded-full bg-white/10" />
-      <div className="absolute -bottom-24 -right-24 h-[26rem] w-[26rem] rounded-full bg-white/10" />
+    <section data-motion="hero" className="relative isolate overflow-hidden bg-[linear-gradient(135deg,#F05A7E_0%,#A55EAE_55%,#125B9A_100%)]">
+      <div data-motion-blob className="absolute -left-28 -top-28 h-96 w-96 rounded-full bg-white/10 will-change-transform" />
+      <div data-motion-blob className="absolute -bottom-24 -right-24 h-[26rem] w-[26rem] rounded-full bg-white/10 will-change-transform" />
       <FloatingIcon icon={Newspaper} className="left-6 top-24 -rotate-6 text-primary" />
       <FloatingIcon icon={Mic} className="left-[47%] top-20 rotate-12 bg-warning-soft text-warning" />
       <FloatingIcon icon={Quote} className="left-10 top-[48%] rotate-6 text-info" />
@@ -339,19 +342,19 @@ function HeroSection() {
 
       <div className="cw-container relative z-10 grid min-h-[720px] items-center gap-12 py-20 text-white lg:grid-cols-[1.15fr_0.85fr] lg:py-24">
         <div className="max-w-3xl">
-          <Badge className="border-transparent bg-white px-3.5 py-1.5 text-primary">
+          <Badge data-motion="hero-item" className="border-transparent bg-white px-3.5 py-1.5 text-primary">
             <Newspaper className="h-3.5 w-3.5" />
             Press · Media Room · Malaysia
           </Badge>
           <h1 className="mt-7 text-5xl font-extrabold italic leading-[0.95] tracking-tight md:text-7xl">
-            Press the wing.
-            <span className="block text-brand-soft">Stories worth telling.</span>
+            <span data-motion="hero-item" className="block">Press the wing.</span>
+            <span data-motion="hero-item" className="block text-brand-soft">Stories worth telling.</span>
           </h1>
-          <p className="mt-7 max-w-xl text-lg font-medium leading-relaxed text-white/90 md:text-xl">
+          <p data-motion="hero-item" className="mt-7 max-w-xl text-lg font-medium leading-relaxed text-white/90 md:text-xl">
             Press releases, brand assets, founder bios, and the contact you actually need —
             straight from Malaysia&apos;s home for creative competitions.
           </p>
-          <div className="mt-8 flex flex-wrap gap-3">
+          <div data-motion="hero-cta" className="mt-8 flex flex-wrap gap-3">
             <Button asChild size="xl" className="rounded-pill bg-white text-primary hover:bg-white/90">
               <Link href="#brand-assets">
                 Download press kit <Download className="h-4 w-4" />
@@ -437,7 +440,7 @@ function PressFeed() {
 
         <div className="mt-10 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
           {pressItems.map((item) => (
-            <article key={item.title} className="overflow-hidden rounded-3xl border bg-card shadow-soft">
+            <article key={item.title} data-motion="card" className="overflow-hidden rounded-3xl border bg-card shadow-soft will-change-transform">
               <div className={cn("h-48 bg-gradient-to-br", item.color)} />
               <div className="space-y-4 p-5">
                 <span
@@ -558,7 +561,7 @@ function QuotesSection() {
         </div>
         <div className="mt-10 grid gap-5 md:grid-cols-2 lg:grid-cols-4">
           {quotes.map((item) => (
-            <article key={item.name} className="rounded-3xl border bg-white p-6 shadow-soft">
+            <article key={item.name} data-motion="card" className="rounded-3xl border bg-white p-6 shadow-soft will-change-transform">
               <Badge variant="info" className="text-[9px] uppercase tracking-[0.12em]">
                 {item.tag}
               </Badge>
@@ -712,7 +715,7 @@ function AwardsStrip() {
         </div>
         <div className="mt-7 grid gap-4 md:grid-cols-5">
           {awards.map((award) => (
-            <article key={award.title} className="rounded-3xl border bg-white p-5 shadow-soft">
+            <article key={award.title} data-motion="card" className="rounded-3xl border bg-white p-5 shadow-soft will-change-transform">
               <div className={cn("grid h-12 w-12 place-items-center rounded-full bg-gradient-to-br text-white shadow-soft", award.gradient)}>
                 <award.icon className="h-6 w-6" />
               </div>
@@ -766,8 +769,9 @@ function NewsletterRibbon() {
 function FloatingIcon({ icon: Icon, className }: { icon: LucideIcon; className?: string }) {
   return (
     <div
+      data-motion-float
       className={cn(
-        "absolute z-0 hidden h-14 w-14 place-items-center rounded-full bg-white shadow-elevated md:grid",
+        "absolute z-0 hidden h-14 w-14 place-items-center rounded-full bg-white shadow-elevated will-change-transform md:grid",
         className,
       )}
     >

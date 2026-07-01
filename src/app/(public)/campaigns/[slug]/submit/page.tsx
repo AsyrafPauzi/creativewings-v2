@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
 
+import { PageMotion } from "@/components/site/animations/page-motion";
 import { Card, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { createClient } from "@/lib/supabase/server";
 import { formatCurrency, timeUntil } from "@/lib/utils";
@@ -63,9 +64,10 @@ export default async function SubmitEntryPage({
   const action = submitEntryAction.bind(null, slug);
 
   return (
+    <PageMotion>
     <div className="container py-14">
-      <div className="mx-auto max-w-2xl">
-        <p className="text-sm text-muted-foreground">
+      <div data-motion="card" className="mx-auto max-w-2xl will-change-transform">
+        <p data-motion="fade" className="text-sm text-muted-foreground">
           <Link href={`/campaigns/${slug}`} className="hover:underline">
             ← Back to campaign
           </Link>
@@ -89,5 +91,6 @@ export default async function SubmitEntryPage({
         </div>
       </div>
     </div>
+    </PageMotion>
   );
 }

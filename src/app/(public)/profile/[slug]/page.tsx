@@ -19,6 +19,7 @@ import {
 } from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
+import { PageMotion } from "@/components/site/animations/page-motion";
 import { SdgRow } from "@/components/site/sdg-icons";
 import { createClient } from "@/lib/supabase/server";
 import { formatDate } from "@/lib/utils";
@@ -119,8 +120,9 @@ export default async function CreatorProfilePage({
   const primaryLink = creator.website ?? `/sign-up?role=organizer`;
 
   return (
+    <PageMotion>
     <div className="bg-background text-body">
-      <section className="relative h-[290px] overflow-hidden">
+      <section data-motion="fade" className="relative h-[290px] overflow-hidden">
         <div
           className="absolute inset-x-0 top-0 h-[220px] bg-cover bg-center"
           style={
@@ -314,6 +316,7 @@ export default async function CreatorProfilePage({
                   key={project.id}
                   href={`/profile/${creator.slug}/p/${project.slug}`}
                   className="group block min-w-0"
+                  data-motion="card"
                 >
                   <div
                     className="h-[200px] overflow-hidden rounded bg-cover bg-center transition-opacity group-hover:opacity-90"
@@ -365,6 +368,7 @@ export default async function CreatorProfilePage({
         </div>
       </section>
     </div>
+    </PageMotion>
   );
 }
 

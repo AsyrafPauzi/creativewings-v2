@@ -98,7 +98,7 @@ function DetailCard({
   children: React.ReactNode;
 }) {
   return (
-    <section className="rounded-lg border border-[#E6E8EE] bg-white p-4 shadow-soft">
+    <section data-motion="card" className="rounded-lg border border-[#E6E8EE] bg-white p-4 shadow-soft will-change-transform">
       <h3 className="text-[11px] font-extrabold uppercase tracking-[0.14em] text-text-muted">
         {title}
       </h3>
@@ -127,7 +127,7 @@ export function CampaignHero({
     : { backgroundImage: MEDIA_GRADIENT };
 
   return (
-    <section className="relative overflow-hidden" style={{ backgroundImage: DETAIL_GRADIENT }}>
+    <section data-motion="hero" className="relative overflow-hidden" style={{ backgroundImage: DETAIL_GRADIENT }}>
       <div className="cw-container relative py-6 md:py-8">
         <div className="pointer-events-none absolute left-6 top-5 grid h-12 w-12 -rotate-12 place-items-center rounded-full bg-primary text-white shadow-elevated">
           <Sparkles className="h-5 w-5" />
@@ -168,7 +168,7 @@ export function CampaignHero({
               )}
             </div>
 
-            <h1 className="text-2xl font-extrabold italic leading-tight tracking-[-0.04em] text-body md:text-[28px]">
+            <h1 data-motion="hero-item" className="text-2xl font-extrabold italic leading-tight tracking-[-0.04em] text-body md:text-[28px]">
               {campaign.title}
             </h1>
 

@@ -16,6 +16,7 @@ import {
 } from "lucide-react";
 
 import { SdgIcon } from "@/components/site/sdg-icons";
+import { AnimatedCounter } from "@/components/site/animations/animated-counter";
 import { Button } from "@/components/ui/button";
 import { formatCurrency } from "@/lib/utils";
 
@@ -142,7 +143,7 @@ export function ProgrammeBand() {
             The programme
           </div>
           <div className="flex flex-col justify-between gap-3 md:flex-row md:items-end">
-            <h2 className="text-4xl font-extrabold italic leading-none tracking-[-0.04em] text-body md:text-5xl">
+            <h2 data-gsap="section-head" className="text-4xl font-extrabold italic leading-none tracking-[-0.04em] text-body md:text-5xl">
               Three ways to ship work.
             </h2>
             <p className="text-sm font-medium text-text-secondary md:text-base">
@@ -155,6 +156,7 @@ export function ProgrammeBand() {
           {PROGRAMMES.map((item) => (
             <Link
               key={item.title}
+              data-gsap="programme-card"
               href={item.href}
               className="group relative flex min-h-[360px] overflow-hidden rounded-[24px] p-8 shadow-[0_14px_30px_rgb(11_19_32/0.13)] transition-transform hover:-translate-y-1 md:min-h-[440px]"
               style={{ background: item.fill }}
@@ -220,16 +222,18 @@ export function StatsBand({
         <span className="text-[11px] font-extrabold uppercase tracking-[0.18em] text-text-muted">
           How we&apos;re doing
         </span>
-        <h2 className="mt-3 text-3xl font-extrabold italic tracking-[-0.035em] text-body md:text-4xl">
+        <h2 data-gsap="section-head" className="mt-3 text-3xl font-extrabold italic tracking-[-0.035em] text-body md:text-4xl">
           Together, we&apos;re paying creative talent.
         </h2>
 
         <div className="mt-8 grid gap-6 md:grid-cols-4">
           {stats.map((stat) => (
-            <div key={stat.label} className="space-y-1">
-              <div className="text-5xl font-extrabold italic leading-none tracking-[-0.06em] md:text-7xl" style={{ color: stat.color }}>
-                {stat.value}
-              </div>
+            <div key={stat.label} data-gsap="stat-item" className="space-y-1">
+              <AnimatedCounter
+                value={stat.value}
+                className="block text-5xl font-extrabold italic leading-none tracking-[-0.06em] md:text-7xl"
+                style={{ color: stat.color }}
+              />
               <p className="text-sm font-semibold text-text-secondary">{stat.label}</p>
             </div>
           ))}
@@ -237,7 +241,12 @@ export function StatsBand({
 
         <div className="mt-9 flex flex-wrap justify-center gap-1.5">
           {Array.from({ length: 17 }, (_, i) => i + 1).map((goal) => (
-            <Link key={goal} href={`/campaigns?sdg=${goal}`} className="transition-transform hover:-translate-y-0.5">
+            <Link
+              key={goal}
+              data-gsap="sdg-icon"
+              href={`/campaigns?sdg=${goal}`}
+              className="transition-transform hover:-translate-y-0.5"
+            >
               <SdgIcon goal={goal} size={56} rounded="sm" />
             </Link>
           ))}
@@ -255,7 +264,7 @@ export function TestimonialsBand() {
     <section className="bg-background py-16 md:py-20">
       <div className="cw-container">
         <div className="flex flex-col justify-between gap-3 md:flex-row md:items-end">
-          <h2 className="text-4xl font-extrabold italic tracking-[-0.04em] text-body md:text-[44px]">
+          <h2 data-gsap="section-head" className="text-4xl font-extrabold italic tracking-[-0.04em] text-body md:text-[44px]">
             Voices from the wings.
           </h2>
           <p className="text-sm font-medium text-text-secondary">What creators, organizers and schools say.</p>
@@ -265,6 +274,7 @@ export function TestimonialsBand() {
           {TESTIMONIALS.map((item) => (
             <article
               key={item.quote}
+              data-gsap="testimonial"
               className={`flex min-h-[300px] flex-col justify-between rounded-[18px] border p-6 ${item.rotation} ${
                 item.dark ? "border-[#0B1320] bg-[#0B1320] text-white" : "border-border bg-white text-body"
               }`}
@@ -297,7 +307,7 @@ export function HowItWorksBand() {
       <div className="cw-container">
         <div className="text-center">
           <span className="text-[11px] font-extrabold uppercase tracking-[0.18em] text-secondary">How it works</span>
-          <h2 className="mt-2 text-4xl font-extrabold italic tracking-[-0.04em] text-body md:text-[44px]">
+          <h2 data-gsap="section-head" className="mt-2 text-4xl font-extrabold italic tracking-[-0.04em] text-body md:text-[44px]">
             Three steps, no fluff.
           </h2>
         </div>
@@ -322,7 +332,7 @@ export function RecentWinnersBand() {
               <Trophy className="h-4 w-4" />
               Recent winners
             </div>
-            <h2 className="mt-2 text-3xl font-extrabold italic tracking-[-0.04em] text-body md:text-4xl">
+            <h2 data-gsap="section-head" className="mt-2 text-3xl font-extrabold italic tracking-[-0.04em] text-body md:text-4xl">
               Last week&apos;s wings.
             </h2>
           </div>
@@ -333,7 +343,7 @@ export function RecentWinnersBand() {
 
         <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
           {WINNERS.map(([name, campaign, amount, initials, gradient]) => (
-            <article key={name} className="overflow-hidden rounded-2xl border bg-white shadow-soft">
+            <article key={name} data-gsap="winner-card" className="overflow-hidden rounded-2xl border bg-white shadow-soft">
               <div className="grid h-40 place-items-center" style={{ backgroundImage: gradient }}>
                 <span className="grid h-[60px] w-[60px] place-items-center rounded-full border-[3px] border-white bg-white/90 text-sm font-extrabold text-body">
                   {initials}
@@ -354,11 +364,11 @@ export function RecentWinnersBand() {
 
 export function OrganizerBand() {
   return (
-    <section className="relative overflow-hidden bg-[#0B1320] py-16 text-white md:py-20">
-      <div className="absolute -left-48 -top-48 h-[540px] w-[540px] rounded-full bg-primary/15" />
-      <div className="absolute -right-20 -top-20 h-[360px] w-[360px] rounded-full bg-secondary/20" />
+    <section data-gsap="organizer" className="relative overflow-hidden bg-[#0B1320] py-16 text-white md:py-20">
+      <div data-gsap="bg-orb" className="absolute -left-48 -top-48 h-[540px] w-[540px] rounded-full bg-primary/15" />
+      <div data-gsap="bg-orb" className="absolute -right-20 -top-20 h-[360px] w-[360px] rounded-full bg-secondary/20" />
       <div className="cw-container relative grid items-center gap-10 lg:grid-cols-[660px_480px]">
-        <div>
+        <div data-gsap="organizer-text">
           <span className="inline-flex items-center gap-2 rounded-pill bg-primary/15 px-3 py-1.5 text-[11px] font-extrabold uppercase tracking-[0.16em] text-primary">
             <Briefcase className="h-3.5 w-3.5" />
             For organizers
@@ -402,7 +412,7 @@ export function NewsletterBand() {
   return (
     <section className="bg-background py-16 md:py-20">
       <div className="cw-container grid gap-8 lg:grid-cols-2">
-        <div className="rounded-[24px] border p-8 md:p-9" style={{ backgroundImage: "linear-gradient(160deg, #FCE6EC 0%, #FFFFFF 60%, #E1ECF6 100%)" }}>
+        <div data-gsap="newsletter-panel" className="rounded-[24px] border p-8 md:p-9" style={{ backgroundImage: "linear-gradient(160deg, #FCE6EC 0%, #FFFFFF 60%, #E1ECF6 100%)" }}>
           <div className="inline-flex items-center gap-2 text-[11px] font-extrabold uppercase tracking-[0.16em] text-primary">
             <Mail className="h-3.5 w-3.5" />
             Stay in the loop
@@ -428,7 +438,7 @@ export function NewsletterBand() {
           <p className="mt-3 text-xs font-medium text-text-muted">Once a week. No spam. Unsubscribe anytime.</p>
         </div>
 
-        <div className="flex min-h-[360px] flex-col rounded-[24px]">
+        <div data-gsap="newsletter-panel" className="flex min-h-[360px] flex-col rounded-[24px]">
           <div className="flex items-end justify-between">
             <h3 className="text-2xl font-extrabold italic tracking-[-0.03em] text-body">From the wings.</h3>
             <span className="text-xs font-bold text-secondary">#creativewings</span>
@@ -464,7 +474,7 @@ function TicketCard({
   color: string;
 }) {
   return (
-    <article className="overflow-hidden rounded-[18px] border bg-white shadow-[0_8px_24px_rgb(11_19_32/0.08)]">
+    <article data-gsap="step-card" className="overflow-hidden rounded-[18px] border bg-white shadow-[0_8px_24px_rgb(11_19_32/0.08)]">
       <div className="flex items-center justify-between px-7 pb-4 pt-7">
         <span className="text-7xl font-extrabold italic leading-none tracking-[-0.08em]" style={{ color }}>
           {number}
@@ -502,7 +512,7 @@ function KpiCard({
   rotation: string;
 }) {
   return (
-    <div className={`flex items-center gap-4 rounded-2xl border border-[#1F2A3D] bg-[#101A2E] p-4 shadow-[0_8px_24px_rgb(0_0_0/0.34)] ${rotation}`}>
+    <div data-gsap="organizer-kpi" className={`flex items-center gap-4 rounded-2xl border border-[#1F2A3D] bg-[#101A2E] p-4 shadow-[0_8px_24px_rgb(0_0_0/0.34)] ${rotation}`}>
       <span className="grid h-12 w-12 place-items-center rounded-full bg-primary/20 text-primary">
         <Icon className="h-5 w-5" />
       </span>

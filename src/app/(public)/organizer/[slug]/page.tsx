@@ -24,6 +24,7 @@ import {
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { PageMotion } from "@/components/site/animations/page-motion";
 import { SdgRow } from "@/components/site/sdg-icons";
 import { createClient } from "@/lib/supabase/server";
 import { formatCurrency, formatDate, timeUntil } from "@/lib/utils";
@@ -166,6 +167,7 @@ export default async function OrganizerProfilePage({
     : org.website || `/organizer/${org.slug}#contact`;
 
   return (
+    <PageMotion>
     <div className="bg-white">
       <section className="cw-container py-8">
         <div className="rounded-[20px] border border-[#E6E8EE] bg-white p-6 shadow-[0_8px_24px_rgba(14,15,18,0.09)] md:p-8">
@@ -399,7 +401,8 @@ export default async function OrganizerProfilePage({
               {publicCampaigns.map((campaign) => (
                 <article
                   key={campaign.id}
-                  className="group flex h-full flex-col overflow-hidden rounded-[18px] border border-[#E6E8EE] bg-white shadow-[0_6px_18px_rgba(11,19,32,0.07)] transition-transform hover:-translate-y-0.5"
+                  data-motion="card"
+                  className="group flex h-full flex-col overflow-hidden rounded-[18px] border border-[#E6E8EE] bg-white shadow-[0_6px_18px_rgba(11,19,32,0.07)] transition-transform hover:-translate-y-0.5 will-change-transform"
                 >
                   <div className="relative flex h-44 flex-col justify-between overflow-hidden bg-gradient-to-br from-[#F05A7E] to-[#3B215B] p-4">
                     {campaign.banner_url && (
@@ -510,6 +513,7 @@ export default async function OrganizerProfilePage({
         </div>
       </section>
     </div>
+    </PageMotion>
   );
 }
 

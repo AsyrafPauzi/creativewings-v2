@@ -32,6 +32,7 @@ export function AuthSplitPage({
     <div className="grid min-h-full flex-1 md:grid-cols-[minmax(0,720px)_minmax(0,1fr)]">
       <AuthCreativePanel variant={variant} />
       <div
+        data-auth-split-form
         className={cn(
           "flex items-center justify-center bg-background px-6 py-10 md:px-20 md:py-14",
           className,
@@ -110,11 +111,11 @@ export function AuthFormHeader({
         </div>
       )}
       <div className="space-y-2">
-        <h1 className="text-[34px] font-black italic leading-[1.05] tracking-tight text-body">
+        <h1 data-motion="hero-item" className="text-[34px] font-black italic leading-[1.05] tracking-tight text-body">
           {title}
         </h1>
         {subtitle && (
-          <p className="text-[15px] font-medium leading-[1.5] text-text-secondary">{subtitle}</p>
+          <p data-motion="hero-item" className="text-[15px] font-medium leading-[1.5] text-text-secondary">{subtitle}</p>
         )}
       </div>
     </div>
@@ -134,7 +135,7 @@ export function AuthField({
   helper?: string;
 }) {
   return (
-    <div className={cn("space-y-2", className)}>
+    <div className={cn("space-y-2", className)} data-motion="field">
       <label
         htmlFor={id}
         className="text-[11px] font-extrabold uppercase tracking-[0.09em] text-text-secondary"

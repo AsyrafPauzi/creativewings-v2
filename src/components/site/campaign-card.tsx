@@ -44,7 +44,7 @@ export function CampaignCard({ campaign }: { campaign: CampaignCardData }) {
   });
 
   return (
-    <article className="group flex h-full flex-col overflow-hidden rounded-md border bg-card shadow-soft transition-all hover:-translate-y-0.5 hover:shadow-elevated">
+    <article data-motion="card" className="group flex h-full flex-col overflow-hidden rounded-md border bg-card shadow-soft transition-all hover:-translate-y-0.5 hover:shadow-elevated will-change-transform">
       <div className="relative h-44 overflow-hidden bg-surface">
         <div
           className="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-105"

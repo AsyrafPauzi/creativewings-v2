@@ -1,5 +1,6 @@
 import Link from "next/link";
 
+import { SdgMotion } from "@/components/site/animations/sdg-motion";
 import { SdgIcon } from "@/components/site/sdg-icons";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -112,22 +113,23 @@ export default function SDGPage() {
   });
 
   return (
+    <SdgMotion>
     <div className="bg-background text-body">
       <section className="overflow-hidden bg-[#0B1320]">
-        <div className="cw-container grid min-h-[620px] items-center gap-12 py-20 md:py-24 lg:grid-cols-[1fr_520px]">
+        <div data-sdg-hero className="cw-container grid min-h-[620px] items-center gap-12 py-20 md:py-24 lg:grid-cols-[1fr_520px]">
           <div className="max-w-2xl">
-            <span className="inline-flex rounded-pill bg-[#F05A7E] px-4 py-2 text-[11px] font-extrabold uppercase tracking-[0.16em] text-white">
+            <span data-motion="hero-item" className="inline-flex rounded-pill bg-[#F05A7E] px-4 py-2 text-[11px] font-extrabold uppercase tracking-[0.16em] text-white">
               SDG Taxonomy &middot; Briefs With Purpose
             </span>
             <h1 className="mt-6 text-6xl font-extrabold italic leading-[0.96] tracking-[-0.06em] text-white md:text-8xl">
-              The 17 wings
-              <span className="block text-[#FFE5DE]">of the world.</span>
+              <span data-motion="hero-item" className="block">The 17 wings</span>
+              <span data-motion="hero-item" className="block text-[#FFE5DE]">of the world.</span>
             </h1>
-            <p className="mt-6 max-w-xl text-lg leading-8 text-white/90">
+            <p data-motion="hero-item" className="mt-6 max-w-xl text-lg leading-8 text-white/90">
               Every brief on Creative Wings is mapped to a UN Sustainable Development Goal. Pick
               a wing, find your brief, leave a mark.
             </p>
-            <div className="mt-7 flex flex-wrap items-center gap-3">
+            <div data-motion="hero-cta" className="mt-7 flex flex-wrap items-center gap-3">
               <Button
                 asChild
                 size="xl"
@@ -144,16 +146,16 @@ export default function SDGPage() {
                 <Link href="#sdg-grid">Explore all 17</Link>
               </Button>
             </div>
-            <div className="mt-7 flex flex-wrap gap-3 text-[11px] font-bold tracking-[0.04em] text-white">
+            <div data-motion="hero-item" className="mt-7 flex flex-wrap gap-3 text-[11px] font-bold tracking-[0.04em] text-white">
               <span className="rounded-pill bg-white/15 px-3 py-2">17/17 covered</span>
               <span className="rounded-pill bg-white/15 px-3 py-2">240 briefs mapped</span>
               <span className="rounded-pill bg-white/15 px-3 py-2">Updated weekly</span>
             </div>
           </div>
 
-          <div className="relative mx-auto hidden h-[520px] w-[520px] lg:block" aria-hidden="true">
-            <div className="absolute left-[120px] top-[120px] h-[280px] w-[280px] rounded-full border border-white/20 bg-white/10" />
-            <div className="absolute left-[170px] top-[170px] h-[180px] w-[180px] rounded-full border border-white/30 bg-white/15" />
+          <div data-sdg-orbit className="relative mx-auto hidden h-[520px] w-[520px] lg:block" aria-hidden="true">
+            <div data-sdg-ring className="absolute left-[120px] top-[120px] h-[280px] w-[280px] rounded-full border border-white/20 bg-white/10" />
+            <div data-sdg-ring className="absolute left-[170px] top-[170px] h-[180px] w-[180px] rounded-full border border-white/30 bg-white/15" />
             <div className="absolute left-[170px] top-[170px] grid h-[180px] w-[180px] place-items-center rounded-full">
               <div className="text-center">
                 <div className="text-8xl font-extrabold italic leading-none tracking-[-0.08em] text-white">
@@ -165,7 +167,7 @@ export default function SDGPage() {
               </div>
             </div>
             {orbitGoals.map(({ goal, x, y }) => (
-              <div key={goal} className="absolute" style={{ left: x, top: y }}>
+              <div key={goal} data-sdg-orbit-icon className="absolute will-change-transform" style={{ left: x, top: y }}>
                 <SdgIcon
                   goal={goal}
                   size={64}
@@ -178,7 +180,7 @@ export default function SDGPage() {
         </div>
       </section>
 
-      <section className="border-b bg-surface px-4 py-7 md:px-8">
+      <section data-sdg-partner className="border-b bg-surface px-4 py-7 md:px-8">
         <div className="mx-auto flex max-w-[1280px] flex-col items-center justify-center gap-5 text-center lg:flex-row lg:text-left">
           <div className="flex items-center gap-3">
             <div className="grid h-12 w-12 place-items-center rounded-full bg-[#125B9A] text-lg font-extrabold text-white">
@@ -209,7 +211,7 @@ export default function SDGPage() {
             <p className="text-[11px] font-extrabold uppercase tracking-[0.16em] text-[#F05A7E]">
               The 17 Wings &middot; Pick Yours
             </p>
-            <h2 className="mt-2 text-4xl font-extrabold italic tracking-[-0.04em] md:text-[42px]">
+            <h2 data-motion="head" className="mt-2 text-4xl font-extrabold italic tracking-[-0.04em] md:text-[42px]">
               Browse all goals.
             </h2>
           </div>
@@ -220,6 +222,7 @@ export default function SDGPage() {
           {goals.map((meta) => (
             <Link
               key={meta.num}
+              data-motion="card"
               href={`/campaigns?sdg=${meta.num}`}
               className="group flex min-h-[340px] flex-col rounded-[16px] border bg-card p-5 shadow-[0_8px_18px_-12px_rgb(11_19_32/0.18)] transition-all hover:-translate-y-1 hover:shadow-elevated"
             >
@@ -247,12 +250,12 @@ export default function SDGPage() {
           <p className="text-[11px] font-extrabold uppercase tracking-[0.16em] text-white">
             Live Impact &middot; All 17 Goals
           </p>
-          <h2 className="mt-2 text-4xl font-extrabold italic tracking-[-0.04em] md:text-5xl">
+          <h2 data-motion="head" className="mt-2 text-4xl font-extrabold italic tracking-[-0.04em] md:text-5xl">
             Wings in motion.
           </h2>
           <div className="mt-8 grid gap-6 md:grid-cols-4">
             {impactStats.map((stat) => (
-              <div key={stat.label} className="rounded-[18px] bg-white/10 p-5 backdrop-blur">
+              <div key={stat.label} data-motion="stat" className="rounded-[18px] bg-white/10 p-5 backdrop-blur">
                 <div className="text-5xl font-extrabold italic leading-none tracking-[-0.06em] md:text-[64px]">
                   {stat.value}
                 </div>
@@ -270,6 +273,7 @@ export default function SDGPage() {
             {goals.map((meta) => (
               <Link
                 key={meta.num}
+                data-motion="sdg-chip"
                 href={`/campaigns?sdg=${meta.num}`}
                 aria-label={`Browse SDG ${meta.num}`}
               >
@@ -292,7 +296,7 @@ export default function SDGPage() {
               <p className="text-[11px] font-extrabold uppercase tracking-[0.16em] text-[#3F7E44]">
                 Pick A Wing &middot; See Briefs
               </p>
-              <h2 className="mt-2 text-4xl font-extrabold italic tracking-[-0.04em] md:text-[42px]">
+              <h2 data-motion="head" className="mt-2 text-4xl font-extrabold italic tracking-[-0.04em] md:text-[42px]">
                 Currently flying: Climate Action.
               </h2>
             </div>
@@ -325,6 +329,7 @@ export default function SDGPage() {
               {climateBriefs.map((brief, index) => (
                 <Link
                   key={brief}
+                  data-motion="brief"
                   href="/campaigns?sdg=13"
                   className="flex items-center justify-between rounded-[16px] border bg-white p-5 shadow-soft transition-colors hover:border-[#3F7E44]"
                 >
@@ -346,12 +351,12 @@ export default function SDGPage() {
         <p className="text-[11px] font-extrabold uppercase tracking-[0.16em] text-[#F05A7E]">
           Voices &middot; Why The Mapping Matters
         </p>
-        <h2 className="mt-2 text-4xl font-extrabold italic tracking-[-0.04em] md:text-[42px]">
+        <h2 data-motion="head" className="mt-2 text-4xl font-extrabold italic tracking-[-0.04em] md:text-[42px]">
           When briefs have a why.
         </h2>
         <div className="mt-6 grid gap-6 md:grid-cols-3">
           {voices.map((voice) => (
-            <figure key={voice.name} className="rounded-[18px] border bg-card p-6">
+            <figure key={voice.name} data-motion="alt" className="rounded-[18px] border bg-card p-6">
               <blockquote className="text-[15px] font-semibold italic leading-7">
                 &quot;{voice.quote}&quot;
               </blockquote>
@@ -384,7 +389,7 @@ export default function SDGPage() {
             </p>
           </div>
           <div className="relative mx-auto h-[420px] w-full max-w-[380px]" aria-hidden="true">
-            <div className="absolute left-10 top-8 flex h-[360px] w-[280px] -rotate-3 flex-col justify-between rounded-[18px] bg-[linear-gradient(135deg,#406CB9,#A55EAE)] p-6 text-white shadow-[0_24px_42px_-18px_rgb(11_19_32/0.4)]">
+            <div data-sdg-story-card className="absolute left-10 top-8 flex h-[360px] w-[280px] -rotate-3 flex-col justify-between rounded-[18px] bg-[linear-gradient(135deg,#406CB9,#A55EAE)] p-6 text-white shadow-[0_24px_42px_-18px_rgb(11_19_32/0.4)]">
               <span className="w-fit rounded-pill bg-white px-3 py-1.5 text-[9px] font-extrabold uppercase tracking-[0.12em] text-[#0B1320]">
                 Our Brand Wing
               </span>
@@ -416,6 +421,7 @@ export default function SDGPage() {
           {resources.map((resource) => (
             <Link
               key={resource.title}
+              data-motion="card"
               href="/sustainable-development-goals"
               className="rounded-[16px] border bg-card p-5 transition-colors hover:bg-surface"
             >
@@ -464,24 +470,15 @@ export default function SDGPage() {
             </div>
           </div>
           <div className="relative hidden h-[200px] lg:block" aria-hidden="true">
-            <SdgIcon
-              goal={13}
-              size={96}
-              rounded="md"
-              className="absolute left-8 top-8 -rotate-6 shadow-[0_18px_36px_-18px_rgb(255_255_255/0.3)]"
-            />
-            <SdgIcon
-              goal={4}
-              size={96}
-              rounded="md"
-              className="absolute left-[140px] top-8 rotate-3 shadow-[0_18px_36px_-18px_rgb(255_255_255/0.3)]"
-            />
-            <SdgIcon
-              goal={11}
-              size={96}
-              rounded="md"
-              className="absolute left-[250px] top-8 -rotate-3 shadow-[0_18px_36px_-18px_rgb(255_255_255/0.3)]"
-            />
+            <div data-sdg-cta-icon className="absolute left-8 top-8 -rotate-6">
+              <SdgIcon goal={13} size={96} rounded="md" className="shadow-[0_18px_36px_-18px_rgb(255_255_255/0.3)]" />
+            </div>
+            <div data-sdg-cta-icon className="absolute left-[140px] top-8 rotate-3">
+              <SdgIcon goal={4} size={96} rounded="md" className="shadow-[0_18px_36px_-18px_rgb(255_255_255/0.3)]" />
+            </div>
+            <div data-sdg-cta-icon className="absolute left-[250px] top-8 -rotate-3">
+              <SdgIcon goal={11} size={96} rounded="md" className="shadow-[0_18px_36px_-18px_rgb(255_255_255/0.3)]" />
+            </div>
           </div>
         </div>
       </section>
@@ -513,5 +510,6 @@ export default function SDGPage() {
         </div>
       </section>
     </div>
+    </SdgMotion>
   );
 }

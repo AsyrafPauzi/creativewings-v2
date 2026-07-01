@@ -19,6 +19,7 @@ import {
   Wallet,
 } from "lucide-react";
 
+import { BrandStoryMotion } from "@/components/site/animations/brand-story-motion";
 import { Button } from "@/components/ui/button";
 
 export const metadata = { title: "Brand Story" };
@@ -219,21 +220,22 @@ const TIMELINE = [
 
 export default function BrandStoryPage() {
   return (
+    <BrandStoryMotion>
     <main className="overflow-hidden bg-white text-black">
       <section className="relative overflow-hidden bg-gradient-to-br from-[#406CB9] via-[#A55EAE] to-[#EC5B7D]">
-        <div className="cw-container grid min-h-[692px] items-center gap-12 py-20 md:grid-cols-[1fr_480px] md:py-24">
+        <div data-brand-hero className="cw-container grid min-h-[692px] items-center gap-12 py-20 md:grid-cols-[1fr_480px] md:py-24">
           <div className="max-w-3xl">
-            <span className="inline-flex rounded-full bg-[#F05A7E] px-3.5 py-1.5 text-[11px] font-extrabold uppercase tracking-[0.16em] text-white">
+            <span data-motion="hero-item" className="inline-flex rounded-full bg-[#F05A7E] px-3.5 py-1.5 text-[11px] font-extrabold uppercase tracking-[0.16em] text-white">
               Brand Story · Since 2024 · Kuala Lumpur
             </span>
             <h1 className="mt-6 text-5xl font-extrabold italic leading-[1.05] tracking-[-0.05em] text-white md:text-7xl lg:text-[80px]">
-              Together, we help
-              <span className="block text-[#FFE5DE]">young talents soar.</span>
+              <span data-motion="hero-item" className="block">Together, we help</span>
+              <span data-motion="hero-item" className="block text-[#FFE5DE]">young talents soar.</span>
             </h1>
-            <p className="mt-6 max-w-xl text-lg leading-8 text-white/90">
+            <p data-motion="hero-item" className="mt-6 max-w-xl text-lg leading-8 text-white/90">
               无限创翼 · The wings story — a Malaysian platform paying creators for real briefs.
             </p>
-            <div className="mt-7 flex flex-wrap gap-3.5">
+            <div data-motion="hero-cta" className="mt-7 flex flex-wrap gap-3.5">
               <Button asChild size="xl" className="rounded-full bg-white text-black shadow-elevated hover:bg-white/95">
                 <Link href="#founder">Read the founder letter</Link>
               </Button>
@@ -258,16 +260,17 @@ export default function BrandStoryPage() {
           <div className="relative mx-auto h-[480px] w-full max-w-[480px]">
             <div className="absolute left-[60px] top-[60px] h-[360px] w-[360px] rounded-full border border-white/20 bg-white/10" />
             <img
+              data-brand-logo
               src="/brand/logo-cw-mark.png"
               alt="Creative Wings mark"
               className="absolute left-[60px] top-[60px] h-[360px] w-[360px] -rotate-2 object-contain drop-shadow-2xl"
             />
-            <Sticker icon={Sparkles} className="-left-5 top-8 -rotate-12 bg-[#F05A7E]" />
-            <Sticker icon={Star} className="right-0 top-0 rotate-[14deg] bg-[#125B9A]" />
-            <Sticker icon={Flame} className="-left-7 bottom-14 -rotate-6 bg-[#F0A23A]" />
-            <Sticker icon={Feather} className="right-3 bottom-5 rotate-[18deg] bg-[#A55EAE]" />
-            <Sticker icon={Heart} className="left-[200px] -top-7 -rotate-3 bg-[#16A34A]" />
-            <Sticker icon={Crown} className="left-[200px] bottom-[-38px] rotate-6 bg-white text-[#F0A23A]" />
+            <Sticker data-brand-sticker icon={Sparkles} className="-left-5 top-8 -rotate-12 bg-[#F05A7E]" />
+            <Sticker data-brand-sticker icon={Star} className="right-0 top-0 rotate-[14deg] bg-[#125B9A]" />
+            <Sticker data-brand-sticker icon={Flame} className="-left-7 bottom-14 -rotate-6 bg-[#F0A23A]" />
+            <Sticker data-brand-sticker icon={Feather} className="right-3 bottom-5 rotate-[18deg] bg-[#A55EAE]" />
+            <Sticker data-brand-sticker icon={Heart} className="left-[200px] -top-7 -rotate-3 bg-[#16A34A]" />
+            <Sticker data-brand-sticker icon={Crown} className="left-[200px] bottom-[-38px] rotate-6 bg-white text-[#F0A23A]" />
           </div>
         </div>
       </section>
@@ -276,7 +279,7 @@ export default function BrandStoryPage() {
         <div className="cw-container grid gap-16 py-20 md:grid-cols-[1fr_480px]">
           <div className="max-w-3xl space-y-5">
             <span className="text-[11px] font-extrabold uppercase tracking-[0.16em] text-[#F05A7E]">Our Story</span>
-            <h2 className="text-4xl font-extrabold italic leading-[1.08] tracking-[-0.04em] md:text-[56px]">
+            <h2 data-motion="head" className="text-4xl font-extrabold italic leading-[1.08] tracking-[-0.04em] md:text-[56px]">
               Why we built this.
             </h2>
             <p className="leading-7">
@@ -320,6 +323,7 @@ export default function BrandStoryPage() {
           {VISION_MISSION.map((card) => (
             <section
               key={card.label}
+              data-motion="card"
               className={`min-h-[440px] rounded-[24px] p-9 text-white shadow-[0_18px_36px_-6px_rgba(11,19,32,0.15)] ${card.className}`}
             >
               <span className="inline-flex items-center gap-1.5 rounded-full bg-white/15 px-3 py-1.5 text-[11px] font-extrabold uppercase tracking-[0.16em]">
@@ -342,12 +346,12 @@ export default function BrandStoryPage() {
         </div>
       </section>
 
-      <section className="relative h-[420px] overflow-hidden bg-gradient-to-br from-[#406CB9] via-[#A55EAE] to-[#EC5B7D]">
-        <FloatingIcon icon={Sparkles} className="left-[8%] top-[14%] -rotate-12 text-white" />
-        <FloatingIcon icon={Star} className="right-[8%] top-[18%] rotate-[14deg] text-[#FFE5DE]" />
-        <FloatingIcon icon={Feather} className="bottom-[16%] left-[14%] rotate-6 text-white" />
-        <FloatingIcon icon={Heart} className="bottom-[12%] right-[14%] -rotate-6 text-white" />
-        <Feather className="absolute left-1/2 top-[60px] h-60 w-60 -translate-x-1/2 text-white/80" />
+      <section data-brand-photo className="relative h-[420px] overflow-hidden bg-gradient-to-br from-[#406CB9] via-[#A55EAE] to-[#EC5B7D]">
+        <FloatingIcon data-brand-float icon={Sparkles} className="left-[8%] top-[14%] -rotate-12 text-white" />
+        <FloatingIcon data-brand-float icon={Star} className="right-[8%] top-[18%] rotate-[14deg] text-[#FFE5DE]" />
+        <FloatingIcon data-brand-float icon={Feather} className="bottom-[16%] left-[14%] rotate-6 text-white" />
+        <FloatingIcon data-brand-float icon={Heart} className="bottom-[12%] right-[14%] -rotate-6 text-white" />
+        <Feather data-brand-feather className="absolute left-1/2 top-[60px] h-60 w-60 -translate-x-1/2 text-white/80" />
         <div className="absolute left-8 top-12 inline-flex items-center gap-2 rounded-full bg-white/15 px-3 py-1.5 text-[11px] font-bold tracking-wide text-white md:left-20">
           <Camera className="h-3.5 w-3.5" />
           PHOTO · Climate Walk 2025, Penang
@@ -372,6 +376,7 @@ export default function BrandStoryPage() {
             {PARTNERS.map((partner) => (
               <div
                 key={partner}
+                data-motion="partner"
                 className="flex h-20 items-center justify-center gap-2 rounded-[14px] border border-[#E6E8EE] bg-[#F8F9FB] px-3 text-center text-sm font-extrabold tracking-wide text-[#555555]"
               >
                 <Building2 className="h-[18px] w-[18px] shrink-0 text-[#8A8F99]" />
@@ -402,7 +407,7 @@ export default function BrandStoryPage() {
         </div>
 
         <div className="cw-container pb-12">
-          <div className="mx-auto grid max-w-[1080px] overflow-hidden rounded-[24px] border border-[#E6E8EE] bg-white shadow-[0_22px_48px_-6px_rgba(11,19,32,0.15)] md:grid-cols-[400px_1fr]">
+          <div data-brand-founder className="mx-auto grid max-w-[1080px] overflow-hidden rounded-[24px] border border-[#E6E8EE] bg-white shadow-[0_22px_48px_-6px_rgba(11,19,32,0.15)] md:grid-cols-[400px_1fr]">
             <div className="flex min-h-[360px] flex-col items-center justify-center gap-5 bg-gradient-to-br from-[#EC5B7D] to-[#A55EAE] p-9 text-center md:min-h-[560px]">
               <div className="grid h-[200px] w-[200px] place-items-center rounded-full border-4 border-white bg-white/90 text-[88px] font-extrabold italic leading-none tracking-[-0.08em] text-[#F05A7E]">
                 AY
@@ -467,10 +472,10 @@ export default function BrandStoryPage() {
       <section className="bg-[#F8F9FB]">
         <div className="cw-container py-16">
           <SectionHeader eyebrow="Timeline · Our First Chapters" title="Wings in motion." action="2024 → today" />
-          <div className="mt-6 hidden h-0.5 w-full bg-[#C9CDD6] md:block" />
-          <div className="mt-6 grid gap-4 md:grid-cols-5">
+          <div className="mt-6 hidden h-0.5 w-full bg-[#C9CDD6] md:block" data-brand-timeline-line />
+          <div data-brand-timeline className="mt-6 grid gap-4 md:grid-cols-5">
             {TIMELINE.map((item) => (
-              <div key={`${item.year}-${item.title}`}>
+              <div key={`${item.year}-${item.title}`} data-motion="timeline-item">
                 <div className="flex items-center gap-2">
                   <span className={`h-3.5 w-3.5 rounded-full border-[3px] border-white ${item.color}`} />
                   <span className="rounded-full border border-[#E6E8EE] bg-white px-2.5 py-1 text-[10px] font-extrabold uppercase tracking-[0.08em] text-[#555555]">
@@ -550,6 +555,7 @@ export default function BrandStoryPage() {
         </div>
       </section>
     </main>
+    </BrandStoryMotion>
   );
 }
 
@@ -557,14 +563,17 @@ function Sticker({
   icon: Icon,
   className,
   large = false,
+  "data-brand-sticker": dataSticker,
 }: {
   icon: LucideIcon;
   className: string;
   large?: boolean;
+  "data-brand-sticker"?: boolean;
 }) {
   return (
     <div
-      className={`absolute grid place-items-center rounded-full text-white shadow-[0_8px_16px_-2px_rgba(11,19,32,0.25)] ${
+      data-brand-sticker={dataSticker ? "" : undefined}
+      className={`absolute grid place-items-center rounded-full text-white shadow-[0_8px_16px_-2px_rgba(11,19,32,0.25)] will-change-transform ${
         large ? "h-14 w-14" : "h-12 w-12"
       } ${className}`}
     >
@@ -573,9 +582,9 @@ function Sticker({
   );
 }
 
-function FloatingIcon({ icon: Icon, className }: { icon: LucideIcon; className: string }) {
+function FloatingIcon({ icon: Icon, className, "data-brand-float": dataFloat }: { icon: LucideIcon; className: string; "data-brand-float"?: boolean }) {
   return (
-    <div className={`absolute grid h-9 w-9 place-items-center rounded-full bg-white/15 ${className}`}>
+    <div data-brand-float={dataFloat ? "" : undefined} className={`absolute grid h-9 w-9 place-items-center rounded-full bg-white/15 will-change-transform ${className}`}>
       <Icon className="h-[18px] w-[18px]" />
     </div>
   );
@@ -598,7 +607,8 @@ function Poster({
 }) {
   return (
     <div
-      className={`absolute flex w-[200px] flex-col justify-between rounded-[14px] p-3.5 text-white shadow-[0_18px_36px_-6px_rgba(11,19,32,0.25)] ${height} ${className}`}
+      data-brand-poster
+      className={`absolute flex w-[200px] flex-col justify-between rounded-[14px] p-3.5 text-white shadow-[0_18px_36px_-6px_rgba(11,19,32,0.25)] will-change-transform ${height} ${className}`}
     >
       <span className="w-fit rounded-full bg-white/90 px-2.5 py-1 text-[9px] font-extrabold tracking-[0.08em] text-[#0B1320]">
         {chip}
@@ -639,7 +649,7 @@ function SectionHeader({
     <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
       <div>
         <p className="text-[11px] font-extrabold uppercase tracking-[0.16em] text-[#F05A7E]">{eyebrow}</p>
-        <h2 className="mt-2 text-3xl font-extrabold italic tracking-[-0.04em] md:text-4xl">{title}</h2>
+        <h2 className="mt-2 text-3xl font-extrabold italic tracking-[-0.04em] md:text-4xl" data-motion="head">{title}</h2>
       </div>
       {actionNode}
     </div>
@@ -648,7 +658,7 @@ function SectionHeader({
 
 function TeamCard({ member }: { member: (typeof TEAM)[number] }) {
   return (
-    <article className="overflow-hidden rounded-[18px] border border-[#E6E8EE] bg-white shadow-[0_14px_30px_-6px_rgba(11,19,32,0.08)]">
+    <article data-motion="team" className="overflow-hidden rounded-[18px] border border-[#E6E8EE] bg-white shadow-[0_14px_30px_-6px_rgba(11,19,32,0.08)]">
       <div className={`relative flex h-[200px] items-end bg-gradient-to-br ${member.gradient} p-6`}>
         <div className="grid h-24 w-24 place-items-center rounded-full border-[3px] border-white bg-white/90 text-2xl font-extrabold italic text-[#F05A7E]">
           {member.initials}
@@ -679,7 +689,7 @@ function TeamCard({ member }: { member: (typeof TEAM)[number] }) {
 
 function ValueCard({ value }: { value: (typeof VALUES)[number] }) {
   return (
-    <article className="flex min-h-[126px] overflow-hidden rounded-[18px] border border-[#E6E8EE] bg-white shadow-[0_14px_30px_-6px_rgba(11,19,32,0.08)]">
+    <article data-motion="value" className="flex min-h-[126px] overflow-hidden rounded-[18px] border border-[#E6E8EE] bg-white shadow-[0_14px_30px_-6px_rgba(11,19,32,0.08)]">
       <div className={`flex w-[88px] shrink-0 flex-col items-center justify-center gap-2 ${value.bg} ${value.color}`}>
         <value.icon className="h-[22px] w-[22px]" />
         <span className="text-4xl font-extrabold italic leading-none tracking-[-0.04em]">{value.number}</span>

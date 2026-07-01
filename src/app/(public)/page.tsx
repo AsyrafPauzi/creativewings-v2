@@ -18,6 +18,7 @@ import {
   Video,
 } from "lucide-react";
 
+import { HomeMotion } from "@/components/site/animations/home-motion";
 import { Hero } from "@/components/site/hero";
 import { type CampaignCardData } from "@/components/site/campaign-card";
 import {
@@ -141,16 +142,18 @@ export default async function HomePage({
         ]}
       />
 
-      <CategoryTabs activeFilter={filter} />
-      <LiveCompetitionsSection cards={cards} filter={filter} search={search} />
-      <SpotlightSection />
-      <ProgrammeBand />
-      <StatsBand totalPrizes={totalPrizes} totalSubmissions={totalSubs} organizerCount={organizerCount ?? 0} />
-      <TestimonialsBand />
-      <HowItWorksBand />
-      <RecentWinnersBand />
-      <OrganizerBand />
-      <NewsletterBand />
+      <HomeMotion>
+        <CategoryTabs activeFilter={filter} />
+        <LiveCompetitionsSection cards={cards} filter={filter} search={search} />
+        <SpotlightSection />
+        <ProgrammeBand />
+        <StatsBand totalPrizes={totalPrizes} totalSubmissions={totalSubs} organizerCount={organizerCount ?? 0} />
+        <TestimonialsBand />
+        <HowItWorksBand />
+        <RecentWinnersBand />
+        <OrganizerBand />
+        <NewsletterBand />
+      </HomeMotion>
     </div>
   );
 }
@@ -158,7 +161,7 @@ export default async function HomePage({
 function CategoryTabs({ activeFilter }: { activeFilter: Filter }) {
   return (
     <section className="sticky top-0 z-20 border-b bg-white/95 backdrop-blur supports-[backdrop-filter]:bg-white/80">
-      <div className="cw-container flex gap-2.5 overflow-x-auto py-5">
+      <div data-gsap="category-tabs" className="cw-container flex gap-2.5 overflow-x-auto py-5">
         {CATEGORY_TABS.map((tab, index) => (
           <div key={tab.label} className="flex shrink-0 items-center gap-2.5">
             {index === 4 && <span className="h-6 w-px bg-border" />}
@@ -190,7 +193,7 @@ function LiveCompetitionsSection({
               <span className="h-2.5 w-2.5 rounded-full bg-red-600" />
               {cards.length || 12} live now
             </div>
-            <h2 className="text-4xl font-extrabold italic leading-none tracking-[-0.04em] text-body md:text-[52px]">
+            <h2 data-gsap="section-head" className="text-4xl font-extrabold italic leading-none tracking-[-0.04em] text-body md:text-[52px]">
               Pick your next brief.
             </h2>
             <p className="text-sm font-medium text-text-secondary md:text-base">
@@ -203,6 +206,7 @@ function LiveCompetitionsSection({
               {SUBCATEGORIES.map((sub) => (
                 <Link
                   key={sub.label}
+                  data-gsap="sub-pill"
                   href={`/campaigns?category=${sub.label.toLowerCase()}`}
                   className="inline-flex items-center gap-1.5 rounded-pill border bg-white px-2.5 py-1.5 text-[11px] font-extrabold text-body"
                 >
@@ -274,7 +278,10 @@ function PencilCampaignCard({
   const typeLabel = campaign.type === "competition" ? "Competition" : campaign.type === "workshop" ? "Workshop" : "Activity";
 
   return (
-    <article className="group flex h-full flex-col overflow-hidden rounded-[18px] border bg-white shadow-[0_6px_18px_rgb(11_19_32/0.07)] transition-all hover:-translate-y-1 hover:shadow-[0_18px_32px_rgb(11_19_32/0.12)]">
+    <article
+      data-gsap="campaign-card"
+      className="group flex h-full flex-col overflow-hidden rounded-[18px] border bg-white shadow-[0_6px_18px_rgb(11_19_32/0.07)] transition-all hover:-translate-y-1 hover:shadow-[0_18px_32px_rgb(11_19_32/0.12)]"
+    >
       <div className="relative h-[200px] overflow-hidden" style={{ backgroundImage: gradient }}>
         {campaign.banner_url && (
           <>
@@ -342,7 +349,7 @@ function SpotlightSection() {
   return (
     <section className="bg-surface px-4 pb-20 pt-10 md:px-8">
       <div className="cw-container px-0">
-        <div className="grid overflow-hidden rounded-[24px] border bg-white shadow-[0_18px_36px_rgb(11_19_32/0.1)] lg:grid-cols-[3fr_2fr] lg:-rotate-1">
+        <div data-gsap="spotlight" className="grid overflow-hidden rounded-[24px] border bg-white shadow-[0_18px_36px_rgb(11_19_32/0.1)] lg:grid-cols-[3fr_2fr] lg:-rotate-1">
           <div
             className="relative min-h-[320px] p-8"
             style={{ backgroundImage: "linear-gradient(220deg, #F05A7E 0%, #A55EAE 50%, #0B1320 100%)" }}
@@ -354,7 +361,7 @@ function SpotlightSection() {
             <span className="absolute right-20 top-10 h-28 w-28 rounded-full bg-white/15" />
             <span className="absolute bottom-20 right-10 h-20 w-20 rounded-full bg-white/10" />
           </div>
-          <div className="flex flex-col justify-center gap-4 p-8 md:p-12">
+          <div data-gsap="spotlight-content" className="flex flex-col justify-center gap-4 p-8 md:p-12">
             <div className="inline-flex items-center gap-2 text-[11px] font-extrabold uppercase tracking-[0.16em] text-warning">
               <Sparkles className="h-3.5 w-3.5" />
               Spotlight · Editor&apos;s pick

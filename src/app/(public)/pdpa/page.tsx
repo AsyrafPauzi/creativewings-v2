@@ -21,6 +21,7 @@ import {
 import type { ReactNode } from "react";
 
 import { getCurrentPolicyVersion } from "@/lib/pdpa";
+import { PageMotion } from "@/components/site/animations/page-motion";
 
 export const metadata = {
   title: "Privacy & PDPA Notice",
@@ -233,27 +234,28 @@ export default async function PdpaPage() {
     : "16 June 2026";
 
   return (
+    <PageMotion hero>
     <div className="overflow-hidden bg-white text-[#0B1320]">
-      <section className="relative isolate min-h-[760px] overflow-hidden bg-[linear-gradient(135deg,#F05A7E_0%,#A55EAE_55%,#125B9A_100%)]">
-        <div className="absolute -left-28 -top-28 h-[380px] w-[380px] rounded-full bg-white/10" />
-        <div className="absolute -right-40 bottom-10 h-[420px] w-[420px] rounded-full bg-white/10" />
+      <section data-motion="hero" className="relative isolate min-h-[760px] overflow-hidden bg-[linear-gradient(135deg,#F05A7E_0%,#A55EAE_55%,#125B9A_100%)]">
+        <div data-motion-blob className="absolute -left-28 -top-28 h-[380px] w-[380px] rounded-full bg-white/10 will-change-transform" />
+        <div data-motion-blob className="absolute -right-40 bottom-10 h-[420px] w-[420px] rounded-full bg-white/10 will-change-transform" />
         <FloatingIcon className="left-4 top-20 rotate-[-8deg]" icon={ShieldCheck} tone="pink" />
         <FloatingIcon className="left-[39%] bottom-10 rotate-[-12deg]" icon={Lock} tone="blue" />
         <FloatingIcon className="right-[47%] top-16 rotate-[14deg]" icon={Feather} tone="amber" />
 
         <div className="relative mx-auto grid min-h-[760px] w-full max-w-[1280px] items-center gap-10 px-4 py-24 md:grid-cols-[minmax(0,760px)_480px] md:px-8 lg:px-0">
           <div className="max-w-[760px]">
-            <div className="inline-flex items-center gap-2 rounded-pill bg-white px-3.5 py-1.5 text-[11px] font-extrabold uppercase tracking-[0.16em] text-[#F05A7E]">
+            <div data-motion="hero-item" className="inline-flex items-center gap-2 rounded-pill bg-white px-3.5 py-1.5 text-[11px] font-extrabold uppercase tracking-[0.16em] text-[#F05A7E]">
               <ShieldCheck className="h-3.5 w-3.5" />
               Privacy & PDPA
             </div>
             <h1 className="mt-7 font-display text-[clamp(4rem,9vw,5.25rem)] font-extrabold italic leading-[1.05] tracking-[-0.045em] text-white">
-              Your data.
-              <span className="block text-[clamp(3rem,6vw,3.375rem)] text-[#FCE6EC]">
+              <span data-motion="hero-item" className="block">Your data.</span>
+              <span data-motion="hero-item" className="block text-[clamp(3rem,6vw,3.375rem)] text-[#FCE6EC]">
                 Your rights.
               </span>
             </h1>
-            <p className="mt-7 max-w-[600px] text-lg font-medium leading-[1.4] text-white md:text-xl">
+            <p data-motion="hero-item" className="mt-7 max-w-[600px] text-lg font-medium leading-[1.4] text-white md:text-xl">
               How Creative Wings collects, uses and protects your personal data — written
               in plain English, governed by Malaysia&apos;s Personal Data Protection Act 2010
               (PDPA), and inspired by GDPR principles of access, portability and the
@@ -625,6 +627,7 @@ export default async function PdpaPage() {
         </div>
       </section>
     </div>
+    </PageMotion>
   );
 }
 
@@ -648,7 +651,8 @@ function Section({
   return (
     <section
       id={id}
-      className="scroll-mt-24 rounded-md border border-[#E6E8EE] bg-white p-8"
+      data-motion="section"
+      className="scroll-mt-24 rounded-md border border-[#E6E8EE] bg-white p-8 will-change-transform"
     >
       <div className="space-y-3.5">
         <div className={`text-[11px] font-extrabold uppercase tracking-[0.18em] ${styles.eyebrow}`}>

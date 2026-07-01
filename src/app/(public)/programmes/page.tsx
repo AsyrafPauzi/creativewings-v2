@@ -15,6 +15,7 @@ import {
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { PageMotion } from "@/components/site/animations/page-motion";
 import { ProgrammeSection } from "@/components/site/programme-section";
 import { SdgIcon } from "@/components/site/sdg-icons";
 import { loadTypeBucket } from "@/lib/programmes";
@@ -131,27 +132,28 @@ export default async function ProgrammesPage({
   const totalOpen = buckets.reduce((sum, bucket) => sum + bucket.totalCount, 0);
 
   return (
+    <PageMotion hero>
     <>
       <section className="relative overflow-hidden bg-[#0B1320]">
         <div
           aria-hidden
           className="absolute inset-0 bg-[radial-gradient(circle_at_16%_0%,rgba(240,90,126,0.34),transparent_34%),radial-gradient(circle_at_88%_22%,rgba(18,91,154,0.34),transparent_34%),linear-gradient(135deg,#0B1320_0%,#1B2638_48%,#07101E_100%)]"
         />
-        <div className="cw-container relative py-16 md:py-20">
+        <div data-motion="hero" className="cw-container relative py-16 md:py-20">
           <div className="grid items-center gap-12 lg:grid-cols-[1fr_520px]">
             <div className="max-w-2xl">
-              <span className="inline-flex rounded-pill bg-primary px-4 py-2 text-[11px] font-extrabold uppercase tracking-[0.18em] text-white">
+              <span data-motion="hero-item" className="inline-flex rounded-pill bg-primary px-4 py-2 text-[11px] font-extrabold uppercase tracking-[0.18em] text-white">
                 Programmes hub · three ways to play
               </span>
               <h1 className="mt-6 text-5xl font-extrabold italic leading-[0.96] tracking-[-0.04em] text-white md:text-7xl lg:text-8xl">
-                Find your brief.
-                <span className="block text-[#FFE5DE]">Build your wings.</span>
+                <span data-motion="hero-item" className="block">Find your brief.</span>
+                <span data-motion="hero-item" className="block text-[#FFE5DE]">Build your wings.</span>
               </h1>
-              <p className="mt-6 max-w-xl text-base leading-7 text-white/85 md:text-lg">
+              <p data-motion="hero-item" className="mt-6 max-w-xl text-base leading-7 text-white/85 md:text-lg">
                 Competitions, workshops, and activities — all in one place. Filter by SDG,
                 by sub-category, by deadline.
               </p>
-              <div className="mt-8 flex flex-wrap items-center gap-3">
+              <div data-motion="hero-cta" className="mt-8 flex flex-wrap items-center gap-3">
                 <Button asChild className="rounded-pill bg-primary px-5 hover:bg-primary-hover">
                   <Link href="#competitions">
                     Browse all <ArrowRight className="h-4 w-4" />
@@ -487,6 +489,7 @@ export default async function ProgrammesPage({
         </div>
       </section>
     </>
+    </PageMotion>
   );
 }
 
@@ -516,7 +519,8 @@ function HeroPoster({
 }) {
   return (
     <div
-      className={`absolute flex h-[300px] w-[220px] flex-col overflow-hidden rounded-[18px] border border-white bg-white shadow-[0_18px_36px_rgb(11_19_32/0.24)] ${rotate} ${position}`}
+      data-motion="poster"
+      className={`absolute flex h-[300px] w-[220px] flex-col overflow-hidden rounded-[18px] border border-white bg-white shadow-[0_18px_36px_rgb(11_19_32/0.24)] will-change-transform ${rotate} ${position}`}
     >
       <div className={`flex flex-1 flex-col justify-between bg-gradient-to-br ${gradient} p-4 text-white`}>
         <span className="w-fit rounded-pill bg-white/20 px-2.5 py-1 text-[10px] font-extrabold uppercase tracking-[0.12em]">
@@ -540,7 +544,7 @@ function HeroSticker({
   icon: LucideIcon;
 }) {
   return (
-    <span className={`absolute grid h-12 w-12 place-items-center rounded-full ring-2 ${className}`}>
+    <span data-motion-float className={`absolute grid h-12 w-12 place-items-center rounded-full ring-2 will-change-transform ${className}`}>
       <Icon className="h-5 w-5" />
     </span>
   );

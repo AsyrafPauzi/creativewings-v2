@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { ArrowRight, Award, Layers, Users } from "lucide-react";
 
+import { PageMotion } from "@/components/site/animations/page-motion";
 import { Button } from "@/components/ui/button";
 import { ProgrammeTypePage } from "@/components/site/programme-type-page";
 
@@ -19,10 +20,11 @@ export default async function WorkshopsPage({
   const { sub } = await searchParams;
 
   return (
+    <PageMotion>
     <>
       <ProgrammeTypePage type="workshop" activeSub={sub ?? null} />
 
-      <section className="bg-surface py-20">
+      <section data-motion="section" className="bg-surface py-20">
         <div className="cw-container">
           <div className="mx-auto mb-12 max-w-2xl text-center">
             <p className="text-xs font-extrabold uppercase tracking-[0.25em] text-primary">Why workshops</p>
@@ -55,7 +57,7 @@ export default async function WorkshopsPage({
                 body: "Workshop outputs auto-import into your Behance-style portfolio with one click — zero friction.",
               },
             ].map((p) => (
-              <div key={p.title} className="rounded-md border bg-card p-6 shadow-soft">
+              <div key={p.title} data-motion="card" className="rounded-md border bg-card p-6 shadow-soft will-change-transform">
                 <div
                   className={
                     "grid h-11 w-11 place-items-center rounded-md " +
@@ -103,5 +105,6 @@ export default async function WorkshopsPage({
         </div>
       </section>
     </>
+    </PageMotion>
   );
 }
