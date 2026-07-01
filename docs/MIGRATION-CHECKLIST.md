@@ -37,100 +37,101 @@ Use this file to track parity with the original plugin. Legend:
 
 ## Phase A — Fix “looks done but hollow” (recommended first)
 
-- [ ] Campaign editor: prizes repeater (`prizes` table)
-- [ ] Campaign editor: FAQ repeater (`faq_items` table)
-- [ ] Campaign editor: age brackets (`age_brackets` table)
-- [ ] Campaign editor: custom participant fields (`custom_fields` table)
-- [ ] Campaign editor: banner / hero image upload (`banners` bucket)
-- [ ] Campaign editor: `multi_min` / `multi_max` in form
-- [ ] Public campaign page: judging criteria from DB (not hardcoded defaults)
-- [ ] Submission form: render custom fields from campaign
-- [ ] Submission form: file upload to Storage (`artworks` bucket)
-- [ ] Organizer profile: logo / banner upload (`logos`, `banners` buckets)
-- [ ] Settings: pre-fill phone, city, country from profile
-- [ ] Dashboard overview: real badge count + wallet balance for contestants
-- [ ] Fix broken `/winners` link on home (page or remove link)
+- [x] Campaign editor: prizes repeater (`prizes` table)
+- [x] Campaign editor: FAQ repeater (`faq_items` table)
+- [x] Campaign editor: age brackets (`age_brackets` table)
+- [x] Campaign editor: custom participant fields (`custom_fields` table)
+- [x] Campaign editor: banner / hero image upload (`banners` bucket)
+- [x] Campaign editor: `multi_min` / `multi_max` in form
+- [x] Public campaign page: judging criteria from DB (not hardcoded defaults)
+- [x] Submission form: render custom fields from campaign
+- [x] Submission form: file upload to Storage (`artworks` bucket)
+- [x] Organizer profile: logo / banner upload (`logos`, `banners` buckets)
+- [x] Settings: pre-fill phone, city, country from profile
+- [x] Dashboard overview: real badge count + wallet balance for contestants
+- [x] Fix broken `/winners` link on home (page or remove link)
 
 ---
 
-## Phase B — Payments & wallet
+## Phase B — Payments & wallet (CommercePay)
 
-- [ ] Stripe checkout for `entry_fee`
-- [ ] Set `paid_at` + `stripe_payment_intent` on successful payment
-- [ ] Submission status flow: `claimed` → `paid`
-- [ ] Wallet ledger writes on payment / refund
-- [ ] Sponsor coupon redemption (`sponsor_coupons`)
-- [ ] Withdrawal requests (plugin: `cw_withdrawal` CPT)
-- [ ] Bank details management for organizers
-- [ ] Wallet CSV export
-- [ ] Online event access email after purchase
+- [x] CommercePay checkout for `entry_fee`
+- [x] Set `paid_at` + `payment_transaction_number` on successful payment
+- [x] Submission status flow: `claimed` → `paid`
+- [x] Super-admin payment settings UI (`/dashboard/admin/payments`)
+- [x] Wallet ledger writes on withdrawal approval
+- [x] Sponsor coupon redemption (`sponsor_coupons`)
+- [x] Withdrawal requests
+- [x] Bank details management for organizers
+- [x] Wallet CSV export
+- [x] Online event access email after purchase
 
 ---
 
 ## Phase C — School upload & claim pipeline
 
-- [ ] Schools CRUD per campaign (`schools` table)
-- [ ] Upload token generation (`upload_tokens`, 90-day expiry)
-- [ ] Public route `/cw-school-upload/[token]`
-- [ ] PIC form: submission code, student name, dynamic upload fields
-- [ ] Staged submission insert (`status: staged`)
-- [ ] Submission code format `CCCMMSSSSEQ`
-- [ ] Parent pre-link code (`guardian_links` / pending parent flow)
-- [ ] Email parent when artwork ready for claim
-- [ ] Claim flow: lookup → confirm → checkout
-- [ ] Claim reservation lock (`claim_reserved_by`, `claim_reserved_until`)
-- [ ] School-scoped 100% sponsor coupons sync + validation
-- [ ] Bulk submission codes (HTML / CSV / PDF)
-- [ ] Bulk QR sheet for schools
-- [ ] Export staged submissions CSV
-- [ ] Dashboard schools page (replace `ComingSoon` stub)
+- [x] Schools CRUD per campaign (`schools` table)
+- [x] Upload token generation (`upload_tokens`, 90-day expiry)
+- [x] Public route `/cw-school-upload/[token]`
+- [x] PIC form: submission code, student name, dynamic upload fields
+- [x] Staged submission insert (`status: staged`)
+- [x] Submission code format `CCCMMSSSSEQ`
+- [x] Parent pre-link code (`guardian_links` / pending parent flow)
+- [x] Email parent when artwork ready for claim
+- [x] Claim flow: lookup → confirm → checkout
+- [x] Claim reservation lock (`claim_reserved_by`, `claim_reserved_until`)
+- [x] School-scoped 100% sponsor coupons sync + validation
+- [x] Bulk submission codes (HTML / CSV / PDF)
+- [x] Bulk QR sheet for schools
+- [x] Export staged submissions CSV
+- [x] Dashboard schools page (replace `ComingSoon` stub)
 
 ---
 
 ## Phase D — Engagement (voting, badges, certificates)
 
-- [ ] Public voting gallery on campaign detail
-- [ ] Vote tracking (`public_votes`, IP / user limits)
-- [ ] Winner status + rank on submissions (`shortlisted`, `winner`)
-- [ ] Judge score + comment (extend review UI)
-- [ ] Badges auto-award engine (`user_badges` writes)
-- [ ] Badge rule types (entries, certs, votes, tenure, etc.)
-- [ ] Manual badge award/revoke (admin)
-- [ ] Badge earn toast + email opt-in
-- [ ] Certificate template upload + layout (x, y, font)
-- [ ] Certificate PDF/image generation (`certificates` bucket)
-- [ ] Certificate download for participants
-- [ ] Certificate batch email send
-- [ ] Certificate-ready email trigger
+- [x] Public voting gallery on campaign detail
+- [x] Vote tracking (`public_votes`, IP / user limits)
+- [x] Winner status + rank on submissions (`shortlisted`, `winner`)
+- [x] Judge score + comment (extend review UI)
+- [x] Badges auto-award engine (`user_badges` writes)
+- [x] Badge rule types (entries, certs, votes, tenure, etc.)
+- [x] Manual badge award/revoke (admin)
+- [x] Badge earn toast + email opt-in
+- [x] Certificate template upload + layout (x, y, font)
+- [x] Certificate PDF/image generation (`certificates` bucket)
+- [x] Certificate download for participants
+- [x] Certificate batch email send
+- [x] Certificate-ready email trigger
 
 ---
 
 ## Phase E — Business tools & admin
 
-- [ ] Reports dashboard (replace `ComingSoon` stub)
-- [ ] Export CSV roster
-- [ ] Export XLSX (multi-sheet)
-- [ ] Export PDF report
-- [ ] Revenue / participant time-series charts
-- [ ] Campaign JSON import (schema v1)
-- [ ] Admin campaign approval queue (`pending` → `published`)
-- [ ] Admin user role / `is_admin` promote UI
-- [ ] Campaign ownership transfer (admin)
-- [ ] REST API: `/campaigns/{id}/submissions`, `/kpis`, webhook auth
-- [ ] Audit log writes from app actions
-- [ ] Sync Center equivalents (badge re-eval, token sync, coupon sync)
+- [x] Reports dashboard (replace `ComingSoon` stub)
+- [x] Export CSV roster
+- [x] Export XLSX (multi-sheet)
+- [x] Export PDF report
+- [x] Revenue / participant time-series charts
+- [x] Campaign JSON import (schema v1)
+- [x] Admin campaign approval queue (`pending` → `published`)
+- [x] Admin user role / `is_admin` promote UI
+- [x] Campaign ownership transfer (admin)
+- [x] REST API: `/campaigns/{id}/submissions`, `/kpis`, webhook auth
+- [x] Audit log writes from app actions
+- [x] Sync Center equivalents (badge re-eval, token sync, coupon sync)
 
 ---
 
 ## Phase F — Design submission (print-on-product)
 
-- [ ] Campaign design mode config (variants, print area, dimensions)
-- [ ] Design artwork PNG upload with dimension validation
-- [ ] Source file upload (.ai, .pdf, .svg, .eps)
-- [ ] Canvas mockup compositor at checkout/submit
-- [ ] Variant picker (color/size swatches)
-- [ ] Download mockup PNG post-submission
-- [ ] Design preview in organizer review UI
+- [x] Campaign design mode config (variants, print area, dimensions)
+- [x] Design artwork PNG upload with dimension validation
+- [x] Source file upload (.ai, .pdf, .svg, .eps)
+- [x] Canvas mockup compositor at checkout/submit
+- [x] Variant picker (color/size swatches)
+- [x] Download mockup PNG post-submission
+- [x] Design preview in organizer review UI
 
 ---
 

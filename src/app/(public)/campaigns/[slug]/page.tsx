@@ -1,5 +1,6 @@
 import { notFound } from "next/navigation";
 
+import { VotingGallery } from "@/components/campaigns/voting-gallery";
 import {
   AboutSection,
   AlsoRecommended,
@@ -18,6 +19,7 @@ import {
   type RelatedCampaign,
 } from "@/components/campaigns/detail-sections";
 import { PageMotion } from "@/components/site/animations/page-motion";
+import { parseJudgingCriteria } from "@/lib/campaigns/parse-judging-criteria";
 import { loadSponsorSlot } from "@/lib/sponsor-slots";
 import { createClient } from "@/lib/supabase/server";
 import type {
@@ -122,6 +124,7 @@ export default async function CampaignDetailPage({ params }: PageProps) {
     { data: relatedRows },
     sponsorTop,
     sponsorBottom,
+    { data: votingRows },
   ] = await Promise.all([
     supabase
       .from("age_brackets")
@@ -168,6 +171,15 @@ export default async function CampaignDetailPage({ params }: PageProps) {
       campaignId: campaign.id,
       subCategorySlug: campaign.sub_category ?? null,
     }),
+    campaign.enable_voting
+      ? supabase
+          .from("submissions")
+          .select("id, student_name, artwork_url, vote_count, age_brackets:age_bracket_id(label)")
+          .eq("campaign_id", campaign.id)
+          .eq("moderation_status", "approved")
+          .in("status", ["paid", "approved", "shortlisted", "winner"])
+          .order("vote_count", { ascending: false })
+      : Promise.resolve({ data: [] }),
   ]);
 
   const subCategory: SubCategoryRow | null =
@@ -175,10 +187,23 @@ export default async function CampaignDetailPage({ params }: PageProps) {
       ? (subCategoryRows[0] as SubCategoryRow)
       : null;
   const related: RelatedCampaign[] = (relatedRows ?? []) as RelatedCampaign[];
+  const votingEntries = (votingRows ?? []).map((row) => {
+    const bracket = Array.isArray(row.age_brackets) ? row.age_brackets[0] : row.age_brackets;
+    return {
+      id: row.id,
+      student_name: row.student_name,
+      artwork_url: row.artwork_url,
+      vote_count: row.vote_count ?? 0,
+      bracketLabel: bracket?.label ?? null,
+    };
+  });
   const joinHref = `/campaigns/${campaign.slug}/submit`;
   const campaignType = campaign.type as CWCampaignType;
   const rules = DEFAULT_RULES[campaignType];
-  const criteria = DEFAULT_CRITERIA[campaignType];
+  const { structured: criteria, prose: proseCriteria } = parseJudgingCriteria(
+    campaign.judging_criteria,
+    DEFAULT_CRITERIA[campaignType],
+  );
 
   return (
     <PageMotion hero>
@@ -206,7 +231,17 @@ export default async function CampaignDetailPage({ params }: PageProps) {
             <SponsorBanner slot={sponsorTop} />
             <SectionTabs />
             <AboutSection campaign={campaign} ageBrackets={ageBrackets ?? []} />
-            <CriteriaSection criteria={criteria} prizes={prizes ?? []} />
+            <CriteriaSection criteria={criteria} proseCriteria={proseCriteria} prizes={prizes ?? []} />
+            {campaign.enable_voting ? (
+              <section className="flex flex-col gap-4" id="voting">
+                <h2 className="text-2xl font-extrabold tracking-tight text-body">Public voting</h2>
+                <p className="text-sm text-text-secondary">
+                  Vote for your favourite entries. Each visitor can cast up to{" "}
+                  {campaign.vote_limit_per_user ?? 1} vote(s) in this campaign.
+                </p>
+                <VotingGallery campaignSlug={campaign.slug} entries={votingEntries} />
+              </section>
+            ) : null}
             <SubmitSection notes={SUBMIT_NOTES} />
             <RulesSection rules={rules} />
             <ResourcesSection campaign={campaign} organizer={organizer} />

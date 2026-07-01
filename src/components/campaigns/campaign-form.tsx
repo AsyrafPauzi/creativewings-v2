@@ -70,6 +70,16 @@ export function CampaignForm({
             <Label htmlFor="title">Campaign title</Label>
             <Input id="title" name="title" defaultValue={defaults.title ?? ""} required />
           </div>
+          <div className="space-y-2">
+            <Label htmlFor="serial_code">Listing ID (3-digit, for exports)</Label>
+            <Input
+              id="serial_code"
+              name="serial_code"
+              maxLength={3}
+              placeholder="002"
+              defaultValue={defaults.serial_code ?? ""}
+            />
+          </div>
           <div className="grid gap-4 md:grid-cols-2">
             <div className="space-y-2">
               <Label htmlFor="type">Type</Label>
@@ -201,6 +211,26 @@ export function CampaignForm({
             <Label htmlFor="currency">Currency</Label>
             <Input id="currency" name="currency" defaultValue={defaults.currency ?? "MYR"} maxLength={3} />
           </div>
+          <div className="space-y-2">
+            <Label htmlFor="multi_min">Min entries per order</Label>
+            <Input
+              id="multi_min"
+              name="multi_min"
+              type="number"
+              min={1}
+              defaultValue={defaults.multi_min ?? 1}
+            />
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="multi_max">Max entries per order</Label>
+            <Input
+              id="multi_max"
+              name="multi_max"
+              type="number"
+              min={1}
+              defaultValue={defaults.multi_max ?? 1}
+            />
+          </div>
         </CardContent>
       </Card>
 
@@ -248,9 +278,50 @@ export function CampaignForm({
           <BoolField name="enable_certificate" label="Issue certificate to participants" defaultChecked={defaults.enable_certificate ?? true} />
           <BoolField name="enable_voting" label="Enable public voting" defaultChecked={!!defaults.enable_voting} />
           <BoolField name="allow_multiple_submissions" label="Allow multiple submissions per user" defaultChecked={!!defaults.allow_multiple_submissions} />
-          <BoolField name="enable_design" label="Design submission (artwork upload)" defaultChecked={!!defaults.enable_design} />
+          <BoolField name="enable_design" label="Design submission (print-on-product)" defaultChecked={!!defaults.enable_design} />
         </CardContent>
       </Card>
+
+      {defaults.enable_design !== false && (
+        <Card>
+          <CardHeader>
+            <CardTitle>Design submission settings</CardTitle>
+            <CardDescription>Required artwork dimensions and variant picker label.</CardDescription>
+          </CardHeader>
+          <CardContent className="grid gap-4 md:grid-cols-3">
+            <div className="space-y-2">
+              <Label htmlFor="design_picker_label">Picker label</Label>
+              <Input
+                id="design_picker_label"
+                name="design_picker_label"
+                defaultValue={defaults.design_picker_label ?? "Choose your product"}
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="design_artwork_w">Artwork width (px)</Label>
+              <Input
+                id="design_artwork_w"
+                name="design_artwork_w"
+                type="number"
+                min={1}
+                defaultValue={defaults.design_artwork_w ?? ""}
+                placeholder="2000"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="design_artwork_h">Artwork height (px)</Label>
+              <Input
+                id="design_artwork_h"
+                name="design_artwork_h"
+                type="number"
+                min={1}
+                defaultValue={defaults.design_artwork_h ?? ""}
+                placeholder="2000"
+              />
+            </div>
+          </CardContent>
+        </Card>
+      )}
 
       <Card>
         <CardHeader>

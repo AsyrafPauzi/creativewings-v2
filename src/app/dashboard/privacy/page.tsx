@@ -36,6 +36,7 @@ const CONSENT_ITEMS: {
     | "consent_account"
     | "consent_transactional"
     | "consent_marketing"
+    | "consent_badge_emails"
     | "consent_analytics"
     | "consent_third_party"
     | "consent_public_profile";
@@ -44,6 +45,7 @@ const CONSENT_ITEMS: {
   required?: boolean;
   field?:
     | "consent_marketing"
+    | "consent_badge_emails"
     | "consent_analytics"
     | "consent_third_party"
     | "consent_public_profile";
@@ -65,6 +67,12 @@ const CONSENT_ITEMS: {
     title: "Marketing emails",
     body: "Occasional newsletters about new campaigns, schools and creator stories.",
     field: "consent_marketing",
+  },
+  {
+    id: "consent_badge_emails",
+    title: "Badge notification emails",
+    body: "Get an email when you unlock a new badge on Creative Wings.",
+    field: "consent_badge_emails",
   },
   {
     id: "consent_analytics",
@@ -126,6 +134,7 @@ export default async function PrivacyPage() {
 
   const flags = {
     marketing: state.profile?.consent_marketing ?? false,
+    badge_emails: state.profile?.consent_badge_emails ?? true,
     analytics: state.profile?.consent_analytics ?? true,
     third_party: state.profile?.consent_third_party ?? false,
     public_profile: state.profile?.consent_public_profile ?? true,

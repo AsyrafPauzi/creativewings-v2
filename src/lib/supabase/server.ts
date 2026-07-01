@@ -1,10 +1,6 @@
 import { cookies } from "next/headers";
 import { createServerClient, type CookieOptions } from "@supabase/ssr";
-
-// NOTE: once you run `npm run db:gen-types`, swap `createServerClient(...)`
-// below to `createServerClient<Database>(...)` to get table-level typing.
-// Until then we use the looser shape so the app builds without a real Supabase
-// project.
+import { createClient as createSupabaseClient } from "@supabase/supabase-js";
 
 type CookiesToSet = { name: string; value: string; options?: CookieOptions }[];
 
@@ -42,14 +38,9 @@ export function createAdminClient() {
   if (!process.env.SUPABASE_SERVICE_ROLE_KEY) {
     throw new Error("SUPABASE_SERVICE_ROLE_KEY is not set");
   }
-  return createServerClient(
+  return createSupabaseClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.SUPABASE_SERVICE_ROLE_KEY,
-    {
-      cookies: {
-        getAll: () => [],
-        setAll: () => {},
-      },
-    },
+    { auth: { persistSession: false, autoRefreshToken: false } },
   );
 }

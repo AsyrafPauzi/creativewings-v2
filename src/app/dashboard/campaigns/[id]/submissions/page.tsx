@@ -10,10 +10,13 @@ import { formatDate } from "@/lib/utils";
 
 export default async function CampaignSubmissionsPage({
   params,
+  searchParams,
 }: {
   params: Promise<{ id: string }>;
+  searchParams: Promise<{ filter?: string }>;
 }) {
   const { id } = await params;
+  const { filter } = await searchParams;
   await requireRole("organizer");
   const supabase = await createClient();
 
@@ -24,13 +27,30 @@ export default async function CampaignSubmissionsPage({
     .maybeSingle();
   if (!campaign) notFound();
 
-  const { data: submissions } = await supabase
+  let query = supabase
     .from("submissions")
     .select(
-      "id, student_name, status, moderation_status, created_at, score, profiles:contestant_id(full_name, email)",
+      "id, student_name, status, moderation_status, created_at, score, rank, vote_count, profiles:contestant_id(full_name, email)",
     )
     .eq("campaign_id", campaign.id)
     .order("created_at", { ascending: false });
+
+  if (filter === "shortlisted") {
+    query = query.eq("status", "shortlisted");
+  } else if (filter === "winners") {
+    query = query.eq("status", "winner");
+  } else if (filter === "approved") {
+    query = query.eq("moderation_status", "approved");
+  }
+
+  const { data: submissions } = await query;
+
+  const tabs = [
+    { key: undefined, label: "All" },
+    { key: "approved", label: "Approved" },
+    { key: "shortlisted", label: "Shortlisted" },
+    { key: "winners", label: "Winners" },
+  ];
 
   return (
     <div className="space-y-6">
@@ -42,6 +62,27 @@ export default async function CampaignSubmissionsPage({
         </p>
         <h1 className="mt-1 text-3xl font-bold tracking-tight">Submissions</h1>
       </header>
+
+      <div className="flex flex-wrap gap-2">
+        {tabs.map((tab) => (
+          <Button
+            key={tab.label}
+            asChild
+            size="sm"
+            variant={(filter ?? undefined) === tab.key || (!filter && !tab.key) ? "default" : "outline"}
+          >
+            <Link
+              href={
+                tab.key
+                  ? `/dashboard/campaigns/${campaign.id}/submissions?filter=${tab.key}`
+                  : `/dashboard/campaigns/${campaign.id}/submissions`
+              }
+            >
+              {tab.label}
+            </Link>
+          </Button>
+        ))}
+      </div>
 
       {!submissions || submissions.length === 0 ? (
         <Card className="border-dashed">
@@ -58,7 +99,7 @@ export default async function CampaignSubmissionsPage({
             {submissions.map((s) => {
               const p = Array.isArray(s.profiles) ? s.profiles[0] : s.profiles;
               return (
-                <li key={s.id} className="flex items-center justify-between p-4">
+                <li key={s.id} className="flex items-center justify-between gap-3 p-4">
                   <div>
                     <div className="font-medium">
                       {s.student_name || p?.full_name || p?.email || "Anonymous"}
@@ -66,9 +107,11 @@ export default async function CampaignSubmissionsPage({
                     <div className="text-xs text-muted-foreground">
                       Submitted {formatDate(s.created_at)}
                       {s.score != null ? ` · Score ${s.score}` : ""}
+                      {s.rank != null ? ` · Rank ${s.rank}` : ""}
+                      {` · ${s.vote_count ?? 0} votes`}
                     </div>
                   </div>
-                  <div className="flex gap-2">
+                  <div className="flex flex-wrap gap-2">
                     <Badge variant="secondary" className="capitalize">{s.status}</Badge>
                     <Badge
                       variant={

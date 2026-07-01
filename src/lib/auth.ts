@@ -14,6 +14,9 @@ export type LoadedSession = {
     role: CWRole;
     is_admin: boolean;
     onboarded_at: string | null;
+    phone: string | null;
+    city: string | null;
+    country: string | null;
   };
 };
 
@@ -27,7 +30,7 @@ export async function requireUser(): Promise<LoadedSession> {
   const { data: profile } = await supabase
     .from("profiles")
     .select(
-      "id, email, full_name, display_name, avatar_url, role, is_admin, onboarded_at",
+      "id, email, full_name, display_name, avatar_url, role, is_admin, onboarded_at, phone, city, country",
     )
     .eq("id", user.id)
     .maybeSingle();

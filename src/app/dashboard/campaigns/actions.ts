@@ -3,6 +3,9 @@
 import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 
+import { writeAuditLog } from "@/lib/audit/log";
+import { onCampaignPublished } from "@/lib/badges/hooks";
+import { getPlatformSettings } from "@/lib/platform/settings";
 import { createClient } from "@/lib/supabase/server";
 import { slugify } from "@/lib/utils";
 import type {
@@ -115,6 +118,10 @@ export async function createCampaignAction(
       multi_min: toIntOr(formData.get("multi_min"), 1),
       multi_max: toIntOr(formData.get("multi_max"), 1),
       enable_design: toBool(formData.get("enable_design")),
+      design_picker_label: String(formData.get("design_picker_label") ?? "").trim() || null,
+      design_artwork_w: toIntOr(formData.get("design_artwork_w"), 0) || null,
+      design_artwork_h: toIntOr(formData.get("design_artwork_h"), 0) || null,
+      serial_code: String(formData.get("serial_code") ?? "").trim().slice(0, 3) || null,
       judging_criteria: String(formData.get("judging_criteria") ?? "").trim() || null,
       total_prize_value: String(formData.get("total_prize_value") ?? "").trim() || null,
       sdg_goals: toArrayInts(formData.get("sdg_goals")),
@@ -173,6 +180,10 @@ export async function updateCampaignAction(
     multi_min: toIntOr(formData.get("multi_min"), 1),
     multi_max: toIntOr(formData.get("multi_max"), 1),
     enable_design: toBool(formData.get("enable_design")),
+    design_picker_label: String(formData.get("design_picker_label") ?? "").trim() || null,
+    design_artwork_w: toIntOr(formData.get("design_artwork_w"), 0) || null,
+    design_artwork_h: toIntOr(formData.get("design_artwork_h"), 0) || null,
+    serial_code: String(formData.get("serial_code") ?? "").trim().slice(0, 3) || null,
     judging_criteria: String(formData.get("judging_criteria") ?? "").trim() || null,
     total_prize_value: String(formData.get("total_prize_value") ?? "").trim() || null,
     sdg_goals: toArrayInts(formData.get("sdg_goals")),
@@ -195,12 +206,50 @@ export async function setCampaignStatusAction(
   status: CWCampaignStatus,
 ) {
   const supabase = await createClient();
-  const payload: Record<string, unknown> = { status };
-  if (status === "published") payload.published_at = new Date().toISOString();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  let nextStatus = status;
+  if (status === "published") {
+    const settings = await getPlatformSettings();
+    nextStatus = settings.require_campaign_approval ? "pending" : "published";
+  }
+
+  const payload: Record<string, unknown> = { status: nextStatus };
+  if (nextStatus === "published") payload.published_at = new Date().toISOString();
   await supabase.from("campaigns").update(payload).eq("id", campaignId);
+
+  if (user) {
+    if (nextStatus === "published") {
+      await onCampaignPublished(user.id);
+      await writeAuditLog({
+        action: "campaign.published",
+        objectType: "campaign",
+        objectId: campaignId,
+        actorId: user.id,
+      });
+    } else if (nextStatus === "pending") {
+      await writeAuditLog({
+        action: "campaign.pending_submitted",
+        objectType: "campaign",
+        objectId: campaignId,
+        actorId: user.id,
+      });
+    } else if (status === "closed") {
+      await writeAuditLog({
+        action: "campaign.closed",
+        objectType: "campaign",
+        objectId: campaignId,
+        actorId: user.id,
+      });
+    }
+  }
+
   revalidatePath("/dashboard/campaigns");
   revalidatePath(`/dashboard/campaigns/${campaignId}`);
   revalidatePath("/campaigns");
+  revalidatePath("/dashboard/admin/campaigns");
 }
 
 export async function deleteCampaignAction(campaignId: string) {

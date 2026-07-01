@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import { Megaphone, ShieldCheck, Users, Trophy, AlertCircle, ArrowRight } from "lucide-react";
+import { Megaphone, ShieldCheck, Users, Trophy, AlertCircle, ArrowRight, Wallet, Sparkles, RefreshCw, Key } from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -17,12 +17,13 @@ export default async function AdminPage() {
 
   const supabase = await createClient();
 
-  const [{ count: totalUsers }, { count: orgs }, { count: liveCampaigns }, { count: pendingSubs }, { data: recentLog }] =
+  const [{ count: totalUsers }, { count: orgs }, { count: liveCampaigns }, { count: pendingSubs }, { count: pendingCampaigns }, { data: recentLog }] =
     await Promise.all([
       supabase.from("profiles").select("id", { count: "exact", head: true }),
       supabase.from("organizers").select("id", { count: "exact", head: true }),
       supabase.from("campaigns").select("id", { count: "exact", head: true }).eq("status", "published"),
       supabase.from("submissions").select("id", { count: "exact", head: true }).eq("moderation_status", "pending"),
+      supabase.from("campaigns").select("id", { count: "exact", head: true }).eq("status", "pending"),
       supabase.from("audit_log").select("id, action, object_type, object_id, created_at").order("created_at", { ascending: false }).limit(8),
     ]);
 
@@ -66,6 +67,73 @@ export default async function AdminPage() {
                 : `${pendingSubs} submission${pendingSubs === 1 ? "" : "s"} waiting for review.`}
             </p>
           </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between">
+            <div>
+              <CardTitle className="flex items-center gap-2"><Wallet className="h-4 w-4" /> Payments</CardTitle>
+              <CardDescription>CommercePay API keys and environment settings.</CardDescription>
+            </div>
+            <Button asChild size="sm" variant="outline">
+              <Link href="/dashboard/admin/payments">Configure <ArrowRight className="h-3 w-3" /></Link>
+            </Button>
+          </CardHeader>
+        </Card>
+
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between">
+            <div>
+              <CardTitle className="flex items-center gap-2"><Sparkles className="h-4 w-4" /> Badges</CardTitle>
+              <CardDescription>Manually award or revoke user badges.</CardDescription>
+            </div>
+            <Button asChild size="sm" variant="outline">
+              <Link href="/dashboard/admin/badges">Manage <ArrowRight className="h-3 w-3" /></Link>
+            </Button>
+          </CardHeader>
+        </Card>
+
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between">
+            <div>
+              <CardTitle className="flex items-center gap-2"><Trophy className="h-4 w-4" /> Campaign approval</CardTitle>
+              <CardDescription>Campaigns awaiting publication review.</CardDescription>
+            </div>
+            <Button asChild size="sm" variant="outline">
+              <Link href="/dashboard/admin/campaigns">Review queue <ArrowRight className="h-3 w-3" /></Link>
+            </Button>
+          </CardHeader>
+          <CardContent>
+            <p className="text-sm text-text-secondary">
+              {(pendingCampaigns ?? 0) === 0
+                ? "No campaigns pending approval."
+                : `${pendingCampaigns} campaign${pendingCampaigns === 1 ? "" : "s"} awaiting review.`}
+            </p>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between">
+            <div>
+              <CardTitle className="flex items-center gap-2"><RefreshCw className="h-4 w-4" /> Sync Center</CardTitle>
+              <CardDescription>Badge re-eval, coupon sync, token extension.</CardDescription>
+            </div>
+            <Button asChild size="sm" variant="outline">
+              <Link href="/dashboard/admin/sync">Open <ArrowRight className="h-3 w-3" /></Link>
+            </Button>
+          </CardHeader>
+        </Card>
+
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between">
+            <div>
+              <CardTitle className="flex items-center gap-2"><Key className="h-4 w-4" /> API keys</CardTitle>
+              <CardDescription>REST integration keys for organizers.</CardDescription>
+            </div>
+            <Button asChild size="sm" variant="outline">
+              <Link href="/dashboard/admin/api-keys">Manage <ArrowRight className="h-3 w-3" /></Link>
+            </Button>
+          </CardHeader>
         </Card>
 
         <Card>

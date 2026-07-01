@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Plus } from "lucide-react";
+import { Plus, Upload } from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -62,11 +62,18 @@ export default async function CampaignsListPage() {
             All campaigns and activities owned by {organizer.name}.
           </p>
         </div>
-        <Button asChild size="lg">
-          <Link href="/dashboard/campaigns/new">
-            <Plus className="h-4 w-4" /> New campaign
-          </Link>
-        </Button>
+        <div className="flex gap-2">
+          <Button asChild size="lg" variant="outline">
+            <Link href="/dashboard/campaigns/import">
+              <Upload className="h-4 w-4" /> Import
+            </Link>
+          </Button>
+          <Button asChild size="lg">
+            <Link href="/dashboard/campaigns/new">
+              <Plus className="h-4 w-4" /> New campaign
+            </Link>
+          </Button>
+        </div>
       </header>
 
       {!campaigns || campaigns.length === 0 ? (
@@ -122,6 +129,9 @@ export default async function CampaignsListPage() {
                   >
                     {c.status}
                   </Badge>
+                  <Button asChild size="sm" variant="ghost">
+                    <Link href={`/dashboard/campaigns/${c.id}/export/json`}>Export</Link>
+                  </Button>
                   <Button asChild size="sm" variant="outline">
                     <Link href={`/dashboard/campaigns/${c.id}`}>Manage</Link>
                   </Button>

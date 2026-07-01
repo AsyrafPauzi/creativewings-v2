@@ -67,15 +67,15 @@ export default async function SettingsPage() {
               </div>
               <div className="space-y-2">
                 <Label htmlFor="phone">Phone</Label>
-                <Input id="phone" name="phone" />
+                <Input id="phone" name="phone" defaultValue={profile.phone ?? ""} />
               </div>
               <div className="space-y-2">
                 <Label htmlFor="city">City</Label>
-                <Input id="city" name="city" />
+                <Input id="city" name="city" defaultValue={profile.city ?? ""} />
               </div>
               <div className="space-y-2">
                 <Label htmlFor="country">Country</Label>
-                <Input id="country" name="country" />
+                <Input id="country" name="country" defaultValue={profile.country ?? ""} />
               </div>
             </div>
           </CardContent>

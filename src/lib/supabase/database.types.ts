@@ -43,6 +43,8 @@ export type CWFieldType =
   | "checkbox"
   | "file";
 export type CWWalletEntryType = "credit" | "debit";
+export type CWPaymentOrderStatus = "pending" | "paid" | "failed" | "cancelled" | "refunded";
+export type CWWithdrawalStatus = "pending" | "approved" | "rejected" | "paid";
 export type CWSponsorPlacement =
   | "landing_hero"
   | "campaign_detail_top"
@@ -68,6 +70,15 @@ export type CWPdpaConsentEvent =
   | "consent_change"
   | "withdraw"
   | "reaccept";
+export type CWBadgeRuleType =
+  | "submission_count"
+  | "certificate_count"
+  | "votes_received"
+  | "shortlisted"
+  | "campaign_winner"
+  | "organizer_published"
+  | "account_tenure_days";
+export type CWApiKeyScope = "read_submissions" | "read_kpis" | "webhooks";
 
 // ---- Row types (the source of truth) ---------------------------------------
 
@@ -91,6 +102,7 @@ export interface ProfileRow {
   consent_analytics: boolean;
   consent_third_party: boolean;
   consent_public_profile: boolean;
+  consent_badge_emails: boolean;
   consent_updated_at: string | null;
   guardian_name: string | null;
   guardian_email: string | null;
@@ -301,6 +313,7 @@ export interface CampaignRow {
   banner_url: string | null;
   hero_url: string | null;
   certificate_template_url: string | null;
+  certificate_layout: Json;
   entry_fee: number;
   currency: string;
   submission_start: string | null;
@@ -320,6 +333,7 @@ export interface CampaignRow {
   enable_school_sponsors: boolean;
   enable_certificate: boolean;
   enable_voting: boolean;
+  vote_limit_per_user: number;
   enable_checkout_message: boolean;
   checkout_message_label: string | null;
   checkout_message_required: boolean;
@@ -422,22 +436,29 @@ export interface SubmissionRow {
   student_name: string | null;
   guardian_name: string | null;
   guardian_contact: string | null;
+  guardian_email: string | null;
   age: number | null;
   artwork_url: string | null;
   artwork_source_url: string | null;
   design_variant: string | null;
+  mockup_url: string | null;
   checkout_message: string | null;
   field_data: Json;
   status: CWSubmissionStatus;
   moderation_status: CWModerationStatus;
   moderation_note: string | null;
+  judge_comment: string | null;
   claim_reserved_by: string | null;
   claim_reserved_until: string | null;
   score: number | null;
   rank: number | null;
+  vote_count: number;
   paid_at: string | null;
   sponsor_coupon_id: string | null;
   stripe_payment_intent: string | null;
+  payment_order_id: string | null;
+  payment_provider: string | null;
+  payment_transaction_number: string | null;
   created_at: string;
   updated_at: string;
 }
@@ -451,6 +472,65 @@ export interface WalletEntryRow {
   reason: string;
   reference_id: string | null;
   created_by: string | null;
+  created_at: string;
+}
+
+export interface PlatformPaymentSettingsRow {
+  id: string;
+  provider: string;
+  enabled: boolean;
+  test_mode: boolean;
+  test_tenant_id: string | null;
+  test_secret_key: string | null;
+  test_currency: string;
+  live_tenant_id: string | null;
+  live_secret_key: string | null;
+  live_currency: string;
+  updated_at: string;
+  updated_by: string | null;
+}
+
+export interface PaymentOrderRow {
+  id: string;
+  reference_code: string;
+  submission_id: string;
+  campaign_id: string;
+  user_id: string;
+  amount_cents: number;
+  currency: string;
+  status: CWPaymentOrderStatus;
+  provider: string;
+  transaction_number: string | null;
+  sponsor_coupon_id: string | null;
+  ip_address: string | null;
+  user_agent: string | null;
+  paid_at: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface OrganizerBankAccountRow {
+  id: string;
+  organizer_id: string;
+  bank_name: string;
+  account_name: string;
+  account_number: string;
+  swift_code: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface WithdrawalRequestRow {
+  id: string;
+  user_id: string;
+  amount: number;
+  currency: string;
+  status: CWWithdrawalStatus;
+  bank_name: string;
+  account_name: string;
+  account_number: string;
+  admin_note: string | null;
+  processed_at: string | null;
   created_at: string;
 }
 
@@ -471,6 +551,44 @@ export interface UserBadgeRow {
   badge_id: string;
   campaign_id: string | null;
   awarded_at: string;
+  notified_at: string | null;
+}
+
+export interface BadgeRuleRow {
+  id: string;
+  badge_id: string;
+  rule_type: CWBadgeRuleType;
+  threshold: number;
+  is_active: boolean;
+  created_at: string;
+}
+
+export interface IssuedCertificateRow {
+  id: string;
+  campaign_id: string;
+  submission_id: string;
+  user_id: string;
+  storage_path: string;
+  format: string;
+  issued_at: string;
+  emailed_at: string | null;
+}
+
+export interface DesignVariantRow {
+  id: string;
+  campaign_id: string;
+  slug: string;
+  label: string;
+  swatch_color: string | null;
+  size_label: string | null;
+  mockup_image_url: string;
+  print_area_x: number;
+  print_area_y: number;
+  print_area_w: number;
+  print_area_h: number;
+  sort_order: number;
+  is_active: boolean;
+  created_at: string;
 }
 
 export interface AuditLogRow {
@@ -481,6 +599,26 @@ export interface AuditLogRow {
   actor_id: string | null;
   details: Json | null;
   created_at: string;
+}
+
+export interface PlatformSettingsRow {
+  id: string;
+  require_campaign_approval: boolean;
+  updated_at: string;
+  updated_by: string | null;
+}
+
+export interface ApiKeyRow {
+  id: string;
+  organizer_id: string;
+  name: string;
+  key_prefix: string;
+  key_hash: string;
+  scopes: CWApiKeyScope[];
+  is_active: boolean;
+  last_used_at: string | null;
+  created_at: string;
+  created_by: string | null;
 }
 
 export interface SdgGoalsRefRow {
@@ -529,17 +667,29 @@ export interface Database {
       prizes: Table<PrizeRow, "campaign_id" | "title">;
       faq_items: Table<FaqItemRow, "campaign_id" | "question" | "answer">;
       custom_fields: Table<CustomFieldRow, "campaign_id" | "label">;
+      design_variants: Table<DesignVariantRow, "campaign_id" | "slug" | "label" | "mockup_image_url">;
       schools: Table<SchoolRow, "campaign_id" | "school_code" | "school_name">;
       sponsor_coupons: Table<SponsorCouponRow, "campaign_id" | "code">;
       upload_tokens: Table<UploadTokenRow, "token" | "campaign_id">;
       submissions: Table<SubmissionRow, "campaign_id">;
+      payment_orders: Table<PaymentOrderRow, "reference_code" | "submission_id" | "campaign_id" | "user_id" | "amount_cents">;
+      platform_payment_settings: Table<PlatformPaymentSettingsRow, "id">;
+      organizer_bank_accounts: Table<OrganizerBankAccountRow, "organizer_id" | "bank_name" | "account_name" | "account_number">;
+      withdrawal_requests: Table<WithdrawalRequestRow, "user_id" | "amount" | "bank_name" | "account_name" | "account_number">;
       wallet_entries: Table<
         WalletEntryRow,
         "user_id" | "entry_type" | "amount" | "reason"
       >;
       badges: Table<BadgeRow, "slug" | "name">;
+      badge_rules: Table<BadgeRuleRow, "badge_id" | "rule_type" | "threshold">;
       user_badges: Table<UserBadgeRow, "user_id" | "badge_id">;
+      issued_certificates: Table<
+        IssuedCertificateRow,
+        "campaign_id" | "submission_id" | "user_id" | "storage_path"
+      >;
       audit_log: Table<AuditLogRow, "action" | "object_type">;
+      platform_settings: Table<PlatformSettingsRow, "id">;
+      api_keys: Table<ApiKeyRow, "organizer_id" | "name" | "key_prefix" | "key_hash">;
       sdg_goals_ref: Table<SdgGoalsRefRow, "goal_number" | "title_en" | "color">;
       public_votes: Table<PublicVoteRow, "submission_id" | "voter_hash">;
       sub_categories: Table<SubCategoryRow, "slug" | "label_en" | "icon">;
@@ -566,10 +716,14 @@ export interface Database {
       cw_moderation_status: CWModerationStatus;
       cw_field_type: CWFieldType;
       cw_wallet_entry_type: CWWalletEntryType;
+      cw_payment_order_status: CWPaymentOrderStatus;
+      cw_withdrawal_status: CWWithdrawalStatus;
       cw_sponsor_placement: CWSponsorPlacement;
       cw_export_status: CWExportStatus;
       cw_export_format: CWExportFormat;
       cw_deletion_status: CWDeletionStatus;
+      cw_badge_rule_type: CWBadgeRuleType;
+      cw_api_key_scope: CWApiKeyScope;
     };
     CompositeTypes: Record<string, never>;
   };

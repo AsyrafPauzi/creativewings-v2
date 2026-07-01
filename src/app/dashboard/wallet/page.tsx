@@ -1,4 +1,7 @@
+import Link from "next/link";
+
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
@@ -29,9 +32,19 @@ export default async function WalletPage() {
 
   return (
     <div className="space-y-6">
-      <header>
-        <h1 className="text-3xl font-extrabold tracking-tight text-body">Wallet</h1>
-        <p className="text-text-secondary">Credits, refunds, and sponsor grants.</p>
+      <header className="flex flex-wrap items-end justify-between gap-4">
+        <div>
+          <h1 className="text-3xl font-extrabold tracking-tight text-body">Wallet</h1>
+          <p className="text-text-secondary">Credits, refunds, and sponsor grants.</p>
+        </div>
+        <div className="flex gap-2">
+          <Button asChild variant="outline" size="sm">
+            <Link href="/dashboard/wallet/export">Export CSV</Link>
+          </Button>
+          <Button asChild size="sm">
+            <Link href="/dashboard/wallet/withdraw">Withdraw</Link>
+          </Button>
+        </div>
       </header>
 
       <Card>

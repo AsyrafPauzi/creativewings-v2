@@ -140,6 +140,19 @@ export default async function DashboardPage() {
   const totalLikes = (portfolio ?? []).reduce((a, p) => a + p.likes_count, 0);
   const totalProjects = (portfolio ?? []).length;
 
+  const [{ count: badgeCount }, { data: walletEntries }] = await Promise.all([
+    supabase
+      .from("user_badges")
+      .select("*", { count: "exact", head: true })
+      .eq("user_id", user.id),
+    supabase.from("wallet_entries").select("entry_type, amount").eq("user_id", user.id),
+  ]);
+
+  const walletBalance = (walletEntries ?? []).reduce((acc, e) => {
+    const signed = e.entry_type === "credit" ? e.amount : -e.amount;
+    return acc + signed;
+  }, 0);
+
   return (
     <div className="space-y-8">
       <header>
@@ -158,8 +171,8 @@ export default async function DashboardPage() {
           </>
         ) : (
           <>
-            <StatCard label="Badges earned" value="0" icon={<Sparkles className="h-5 w-5" />} tone="warning" />
-            <StatCard label="Wallet balance" value="RM 0.00" icon={<Compass className="h-5 w-5" />} tone="success" />
+            <StatCard label="Badges earned" value={String(badgeCount ?? 0)} icon={<Sparkles className="h-5 w-5" />} tone="warning" />
+            <StatCard label="Wallet balance" value={formatCurrency(walletBalance)} icon={<Compass className="h-5 w-5" />} tone="success" />
           </>
         )}
       </div>

@@ -28,7 +28,7 @@ export default async function SubmitEntryPage({
   const { data: campaign } = await supabase
     .from("campaigns")
     .select(
-      "id, slug, title, status, entry_fee, currency, submission_deadline, enable_age_brackets, enable_checkout_message, checkout_message_label, checkout_message_required, allow_multiple_submissions",
+      "id, slug, title, status, entry_fee, currency, submission_deadline, enable_age_brackets, enable_checkout_message, checkout_message_label, checkout_message_required, allow_multiple_submissions, enable_design, design_picker_label, design_artwork_w, design_artwork_h",
     )
     .eq("slug", slug)
     .maybeSingle();
@@ -53,15 +53,33 @@ export default async function SubmitEntryPage({
     );
   }
 
-  const { data: ageBrackets } = campaign.enable_age_brackets
-    ? await supabase
-        .from("age_brackets")
-        .select("id, label, min_age, max_age")
+  const [{ data: ageBrackets }, { data: customFields }, { data: designVariants }] =
+    await Promise.all([
+      campaign.enable_age_brackets
+        ? supabase
+            .from("age_brackets")
+            .select("id, label, min_age, max_age")
+            .eq("campaign_id", campaign.id)
+            .order("sort_order")
+        : Promise.resolve({ data: [] }),
+      supabase
+        .from("custom_fields")
+        .select("*")
         .eq("campaign_id", campaign.id)
-        .order("sort_order")
-    : { data: [] };
+        .order("sort_order"),
+      campaign.enable_design
+        ? supabase
+            .from("design_variants")
+            .select("*")
+            .eq("campaign_id", campaign.id)
+            .eq("is_active", true)
+            .order("sort_order")
+        : Promise.resolve({ data: [] }),
+    ]);
 
   const action = submitEntryAction.bind(null, slug);
+  const useDesignFlow =
+    campaign.enable_design && designVariants && designVariants.length > 0;
 
   return (
     <PageMotion>
@@ -82,6 +100,15 @@ export default async function SubmitEntryPage({
           <SubmitEntryForm
             action={action}
             ageBrackets={ageBrackets ?? []}
+            customFields={customFields ?? []}
+            enableDesign={!!campaign.enable_design}
+            designMode={useDesignFlow}
+            designVariants={designVariants ?? []}
+            designPickerLabel={campaign.design_picker_label}
+            designArtworkW={campaign.design_artwork_w}
+            designArtworkH={campaign.design_artwork_h}
+            entryFee={Number(campaign.entry_fee ?? 0)}
+            currency={campaign.currency ?? "MYR"}
             checkoutMessage={{
               enabled: campaign.enable_checkout_message,
               label: campaign.checkout_message_label,

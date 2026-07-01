@@ -54,6 +54,14 @@ export async function updateConsentAction(formData: FormData) {
     userAgent: ctx.userAgent,
   });
 
+  const supabase = await createClient();
+  await supabase
+    .from("profiles")
+    .update({
+      consent_badge_emails: formData.get("consent_badge_emails") === "on",
+    })
+    .eq("id", user.id);
+
   revalidatePath("/dashboard/privacy");
 }
 

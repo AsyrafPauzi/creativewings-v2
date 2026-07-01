@@ -1,5 +1,6 @@
 import { redirect } from "next/navigation";
 
+import { UserAdminControls } from "@/components/admin/user-admin-controls";
 import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
 import { requireUser } from "@/lib/auth";
@@ -30,13 +31,13 @@ export default async function AdminUsersPage() {
     <div className="space-y-6">
       <header>
         <h1 className="text-3xl font-extrabold tracking-tight text-body">Users</h1>
-        <p className="text-text-secondary">100 most recent accounts.</p>
+        <p className="text-text-secondary">100 most recent accounts. Change roles and admin access.</p>
       </header>
 
       <Card>
         <ul className="divide-y">
           {(users ?? []).map((u) => (
-            <li key={u.id} className="flex items-center justify-between gap-4 p-4">
+            <li key={u.id} className="flex flex-wrap items-center justify-between gap-4 p-4">
               <div className="min-w-0">
                 <div className="line-clamp-1 font-bold text-body">{u.full_name || u.email}</div>
                 <div className="text-xs text-text-muted">
@@ -44,9 +45,15 @@ export default async function AdminUsersPage() {
                   {u.age_category ? ` · ${u.age_category.replace(/_/g, " ")}` : ""}
                 </div>
               </div>
-              <div className="flex items-center gap-2 shrink-0">
+              <div className="flex flex-wrap items-center gap-2 shrink-0">
                 <Badge variant={ROLE_TONES[u.role] ?? "soft"} className="capitalize">{u.role}</Badge>
                 {u.is_admin && <Badge variant="default">Admin</Badge>}
+                <UserAdminControls
+                  userId={u.id}
+                  currentRole={u.role}
+                  isAdmin={u.is_admin}
+                  isSelf={u.id === profile.id}
+                />
               </div>
             </li>
           ))}

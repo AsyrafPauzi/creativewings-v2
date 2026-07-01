@@ -20,6 +20,13 @@ export default async function MySubmissionsPage() {
     .eq("contestant_id", user.id)
     .order("created_at", { ascending: false });
 
+  const { data: certs } = await supabase
+    .from("issued_certificates")
+    .select("id, submission_id")
+    .eq("user_id", user.id);
+
+  const certBySub = new Map((certs ?? []).map((c) => [c.submission_id, c.id]));
+
   return (
     <div className="space-y-6">
       <header>
@@ -46,8 +53,9 @@ export default async function MySubmissionsPage() {
           <ul className="divide-y">
             {subs.map((s) => {
               const camp = Array.isArray(s.campaigns) ? s.campaigns[0] : s.campaigns;
+              const certId = certBySub.get(s.id);
               return (
-                <li key={s.id} className="flex items-center justify-between p-4">
+                <li key={s.id} className="flex items-center justify-between gap-3 p-4">
                   <div>
                     <Link
                       href={camp ? `/campaigns/${camp.slug}` : "#"}
@@ -61,7 +69,7 @@ export default async function MySubmissionsPage() {
                       {s.score != null ? ` · Score ${s.score}` : ""}
                     </div>
                   </div>
-                  <div className="flex items-center gap-2">
+                  <div className="flex flex-wrap items-center gap-2">
                     <Badge variant="secondary" className="capitalize">{s.status}</Badge>
                     <Badge
                       variant={
@@ -75,6 +83,14 @@ export default async function MySubmissionsPage() {
                     >
                       {s.moderation_status}
                     </Badge>
+                    {certId ? (
+                      <Link
+                        href={`/api/certificates/${certId}/download`}
+                        className="text-xs font-bold text-primary hover:underline"
+                      >
+                        Download certificate
+                      </Link>
+                    ) : null}
                   </div>
                 </li>
               );

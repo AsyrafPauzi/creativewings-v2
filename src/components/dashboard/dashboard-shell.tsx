@@ -4,13 +4,16 @@ import {
   Building2,
   Compass,
   Folder,
+  Key,
   LayoutDashboard,
   Lock,
   ListChecks,
   Megaphone,
+  RefreshCw,
   Settings,
   ShieldCheck,
   Sparkles,
+  Ticket,
   Trophy,
   Users,
   Wallet,
@@ -31,6 +34,7 @@ function navFor(role: CWRole, isAdmin: boolean): NavItem[] {
 
   const contestant: NavItem[] = [
     { href: "/dashboard/submissions", label: "My submissions", icon: <ListChecks className="h-4 w-4" /> },
+    { href: "/claim", label: "Claim entry", icon: <Ticket className="h-4 w-4" /> },
     { href: "/dashboard/badges", label: "Badges", icon: <Sparkles className="h-4 w-4" /> },
     { href: "/dashboard/wallet", label: "Wallet", icon: <Wallet className="h-4 w-4" /> },
     { href: "/campaigns", label: "Browse campaigns", icon: <Compass className="h-4 w-4" /> },
@@ -46,6 +50,7 @@ function navFor(role: CWRole, isAdmin: boolean): NavItem[] {
   const organizer: NavItem[] = [
     { href: "/dashboard/campaigns", label: "Campaigns", icon: <Trophy className="h-4 w-4" /> },
     { href: "/dashboard/organizer", label: "Organization", icon: <Building2 className="h-4 w-4" /> },
+    { href: "/dashboard/organizer/bank", label: "Bank details", icon: <Wallet className="h-4 w-4" /> },
     { href: "/dashboard/reports", label: "Reports", icon: <BarChart3 className="h-4 w-4" /> },
     { href: "/dashboard/wallet", label: "Wallet", icon: <Wallet className="h-4 w-4" /> },
   ];
@@ -53,7 +58,13 @@ function navFor(role: CWRole, isAdmin: boolean): NavItem[] {
   const admin: NavItem[] = [
     { href: "/dashboard/admin", label: "Admin overview", icon: <ShieldCheck className="h-4 w-4" /> },
     { href: "/dashboard/admin/users", label: "Users", icon: <Users className="h-4 w-4" /> },
+    { href: "/dashboard/admin/campaigns", label: "Campaigns", icon: <Trophy className="h-4 w-4" /> },
     { href: "/dashboard/admin/moderation", label: "Moderation", icon: <Megaphone className="h-4 w-4" /> },
+    { href: "/dashboard/admin/payments", label: "Payments", icon: <Wallet className="h-4 w-4" /> },
+    { href: "/dashboard/admin/withdrawals", label: "Withdrawals", icon: <Wallet className="h-4 w-4" /> },
+    { href: "/dashboard/admin/sync", label: "Sync Center", icon: <RefreshCw className="h-4 w-4" /> },
+    { href: "/dashboard/admin/api-keys", label: "API keys", icon: <Key className="h-4 w-4" /> },
+    { href: "/dashboard/admin/settings", label: "Settings", icon: <Settings className="h-4 w-4" /> },
   ];
 
   const tail: NavItem[] = [

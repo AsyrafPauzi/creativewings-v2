@@ -26,10 +26,10 @@ import {
   NewsletterBand,
   OrganizerBand,
   ProgrammeBand,
-  RecentWinnersBand,
   StatsBand,
   TestimonialsBand,
 } from "@/components/site/landing-sections";
+import { RecentWinnersBand } from "@/components/site/recent-winners-band";
 import { SdgIcon } from "@/components/site/sdg-icons";
 import { Button } from "@/components/ui/button";
 import { createClient } from "@/lib/supabase/server";

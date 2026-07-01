@@ -1177,9 +1177,11 @@ export function RulesSection({ rules }: { rules: string[] }) {
 
 export function CriteriaSection({
   criteria,
+  proseCriteria,
   prizes,
 }: {
   criteria: { name: string; weight: string; description?: string }[];
+  proseCriteria?: string | null;
   prizes: PrizeRow[];
 }) {
   return (
@@ -1190,33 +1192,41 @@ export function CriteriaSection({
         color="hsl(var(--success))"
       />
 
-      {criteria.length > 0 && (
-        <div className="overflow-hidden rounded-lg border border-[#E6E8EE] bg-white">
-          <div className="grid grid-cols-[1fr_72px_1.4fr] border-b bg-surface px-4 py-2 text-[10px] font-extrabold uppercase tracking-[0.14em] text-text-secondary">
-            <span>Criterion</span>
-            <span>Weight</span>
-            <span>Description</span>
-          </div>
-          {criteria.map((c, i) => (
-            <div
-              key={c.name}
-              className={`grid grid-cols-[1fr_72px_1.4fr] items-start px-4 py-3 ${
-                i < criteria.length - 1 ? "border-b" : ""
-              }`}
-            >
-              <div className="flex items-center gap-2 text-[12px] font-extrabold text-body">
-                <span className="block h-1.5 w-1.5 rounded-full bg-success" />
-                {c.name}
-              </div>
-              <div className="text-[12px] font-extrabold text-success">
-                {c.weight}
-              </div>
-              <p className="text-[11px] leading-relaxed text-text-secondary">
-                {c.description ?? "—"}
-              </p>
-            </div>
-          ))}
+      {proseCriteria ? (
+        <div className="rounded-lg border border-[#E6E8EE] bg-white p-4">
+          <p className="whitespace-pre-wrap text-[12px] leading-relaxed text-text-secondary">
+            {proseCriteria}
+          </p>
         </div>
+      ) : (
+        criteria.length > 0 && (
+          <div className="overflow-hidden rounded-lg border border-[#E6E8EE] bg-white">
+            <div className="grid grid-cols-[1fr_72px_1.4fr] border-b bg-surface px-4 py-2 text-[10px] font-extrabold uppercase tracking-[0.14em] text-text-secondary">
+              <span>Criterion</span>
+              <span>Weight</span>
+              <span>Description</span>
+            </div>
+            {criteria.map((c, i) => (
+              <div
+                key={c.name}
+                className={`grid grid-cols-[1fr_72px_1.4fr] items-start px-4 py-3 ${
+                  i < criteria.length - 1 ? "border-b" : ""
+                }`}
+              >
+                <div className="flex items-center gap-2 text-[12px] font-extrabold text-body">
+                  <span className="block h-1.5 w-1.5 rounded-full bg-success" />
+                  {c.name}
+                </div>
+                <div className="text-[12px] font-extrabold text-success">
+                  {c.weight}
+                </div>
+                <p className="text-[11px] leading-relaxed text-text-secondary">
+                  {c.description ?? "—"}
+                </p>
+              </div>
+            ))}
+          </div>
+        )
       )}
 
       {prizes.length > 0 && (

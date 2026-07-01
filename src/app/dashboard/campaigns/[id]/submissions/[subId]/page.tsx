@@ -1,5 +1,4 @@
 import { notFound } from "next/navigation";
-import { revalidatePath } from "next/cache";
 import Link from "next/link";
 
 import { Badge } from "@/components/ui/badge";
@@ -11,35 +10,22 @@ import { Textarea } from "@/components/ui/textarea";
 import { requireRole } from "@/lib/auth";
 import { createClient } from "@/lib/supabase/server";
 import { formatDate } from "@/lib/utils";
-import type { CWModerationStatus, CWSubmissionStatus } from "@/lib/supabase/database.types";
 
-async function moderateAction(
+import { saveReviewAction, setSubmissionStatusAction } from "../actions";
+import { regenerateMockupAction } from "../regenerate-mockup";
+
+async function saveForm(campaignId: string, subId: string, formData: FormData) {
+  "use server";
+  await saveReviewAction(campaignId, subId, formData);
+}
+
+async function statusForm(
   campaignId: string,
   subId: string,
-  moderation: CWModerationStatus,
-  formData: FormData,
+  status: Parameters<typeof setSubmissionStatusAction>[2],
 ) {
   "use server";
-  const supabase = await createClient();
-  const note = String(formData.get("note") ?? "").trim() || null;
-  const scoreRaw = String(formData.get("score") ?? "").trim();
-  const score = scoreRaw ? parseFloat(scoreRaw) : null;
-
-  const status: CWSubmissionStatus =
-    moderation === "approved" ? "approved" : moderation === "rejected" ? "rejected" : "claimed";
-
-  await supabase
-    .from("submissions")
-    .update({
-      moderation_status: moderation,
-      moderation_note: note,
-      score,
-      status,
-    })
-    .eq("id", subId);
-
-  revalidatePath(`/dashboard/campaigns/${campaignId}/submissions`);
-  revalidatePath(`/dashboard/campaigns/${campaignId}/submissions/${subId}`);
+  await setSubmissionStatusAction(campaignId, subId, status);
 }
 
 export default async function ReviewSubmissionPage({
@@ -54,7 +40,7 @@ export default async function ReviewSubmissionPage({
   const { data: sub } = await supabase
     .from("submissions")
     .select(
-      "*, profiles:contestant_id(full_name, email), age_brackets:age_bracket_id(label)",
+      "*, profiles:contestant_id(full_name, email), age_brackets:age_bracket_id(label), campaigns:campaign_id(enable_design, title)",
     )
     .eq("id", subId)
     .maybeSingle();
@@ -63,8 +49,6 @@ export default async function ReviewSubmissionPage({
 
   const profile = Array.isArray(sub.profiles) ? sub.profiles[0] : sub.profiles;
   const bracket = Array.isArray(sub.age_brackets) ? sub.age_brackets[0] : sub.age_brackets;
-
-  const moderate = moderateAction.bind(null, id, subId);
 
   return (
     <div className="space-y-6">
@@ -90,22 +74,23 @@ export default async function ReviewSubmissionPage({
             <span className="text-muted-foreground">Contact:</span>{" "}
             <span>{profile?.email}</span>
           </div>
-          {sub.age && (
+          {sub.submission_code ? (
             <div>
-              <span className="text-muted-foreground">Age:</span> {sub.age}
+              <span className="text-muted-foreground">Code:</span>{" "}
+              <span className="font-mono">{sub.submission_code}</span>
             </div>
-          )}
-          {bracket && (
+          ) : null}
+          {bracket ? (
             <div>
               <span className="text-muted-foreground">Category:</span> {bracket.label}
             </div>
-          )}
-          {sub.guardian_name && (
-            <div>
-              <span className="text-muted-foreground">Guardian:</span>{" "}
-              {sub.guardian_name} · {sub.guardian_contact}
-            </div>
-          )}
+          ) : null}
+          <div className="flex flex-wrap gap-2 pt-1">
+            <Badge variant="secondary" className="capitalize">{sub.status}</Badge>
+            <Badge variant="outline" className="capitalize">{sub.moderation_status}</Badge>
+            {sub.rank != null ? <Badge variant="success">Rank #{sub.rank}</Badge> : null}
+            <Badge variant="outline">{sub.vote_count ?? 0} votes</Badge>
+          </div>
           <div className="text-xs text-muted-foreground">
             Submitted {formatDate(sub.created_at)}
           </div>
@@ -114,73 +99,131 @@ export default async function ReviewSubmissionPage({
 
       <Card>
         <CardHeader>
-          <CardTitle>Artwork</CardTitle>
+          <CardTitle>Artwork & design</CardTitle>
+          {sub.design_variant ? (
+            <CardDescription>Variant: {sub.design_variant}</CardDescription>
+          ) : null}
         </CardHeader>
-        <CardContent>
-          {sub.artwork_url ? (
-            <a
-              href={sub.artwork_url}
-              target="_blank"
-              rel="noreferrer"
-              className="text-primary hover:underline"
-            >
-              {sub.artwork_url}
-            </a>
-          ) : (
-            <p className="text-sm text-muted-foreground">No artwork URL provided.</p>
-          )}
-          {sub.checkout_message && (
-            <div className="mt-4">
-              <div className="text-xs text-muted-foreground">Message:</div>
-              <p className="mt-1 text-sm">{sub.checkout_message}</p>
+        <CardContent className="space-y-4">
+          <div className="grid gap-4 md:grid-cols-2">
+            <div>
+              <p className="mb-2 text-xs font-bold uppercase text-muted-foreground">Raw artwork</p>
+              {sub.artwork_url ? (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img
+                  src={sub.artwork_url}
+                  alt="Artwork"
+                  className="max-h-48 rounded border object-contain"
+                />
+              ) : (
+                <p className="text-sm text-muted-foreground">No artwork.</p>
+              )}
             </div>
-          )}
+            <div>
+              <p className="mb-2 text-xs font-bold uppercase text-muted-foreground">Product mockup</p>
+              {sub.mockup_url ? (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img
+                  src={sub.mockup_url}
+                  alt="Mockup"
+                  className="max-h-48 rounded border object-contain"
+                />
+              ) : (
+                <p className="text-sm text-muted-foreground">No mockup generated.</p>
+              )}
+            </div>
+          </div>
+          <div className="flex flex-wrap gap-2">
+            {sub.mockup_url ? (
+              <Button asChild size="sm" variant="outline">
+                <a href={`/api/mockups/${sub.id}/download`} target="_blank" rel="noreferrer">
+                  Download mockup
+                </a>
+              </Button>
+            ) : null}
+            {sub.artwork_source_url ? (
+              <Button asChild size="sm" variant="outline">
+                <a href={sub.artwork_source_url} target="_blank" rel="noreferrer">
+                  Download source file
+                </a>
+              </Button>
+            ) : null}
+            {sub.artwork_url && sub.design_variant && !sub.mockup_url ? (
+              <form action={async () => {
+                "use server";
+                await regenerateMockupAction(id, subId);
+              }}>
+                <Button type="submit" size="sm" variant="secondary">Regenerate mockup</Button>
+              </form>
+            ) : null}
+          </div>
         </CardContent>
       </Card>
 
       <Card>
         <CardHeader>
-          <CardTitle>Moderation</CardTitle>
-          <CardDescription>
-            Current: <Badge variant="secondary" className="capitalize">{sub.moderation_status}</Badge>
-          </CardDescription>
+          <CardTitle>Judging & moderation</CardTitle>
+          <CardDescription>Score, judge feedback, and workflow status.</CardDescription>
         </CardHeader>
         <CardContent>
-          <form className="space-y-4">
+          <form action={saveForm.bind(null, id, subId)} className="space-y-4">
+            <div className="grid gap-4 md:grid-cols-2">
+              <div className="space-y-2">
+                <Label htmlFor="score">Judge score</Label>
+                <Input
+                  id="score"
+                  name="score"
+                  type="number"
+                  step={0.1}
+                  defaultValue={sub.score ?? undefined}
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="rank">Winner rank (1 = first)</Label>
+                <Input id="rank" name="rank" type="number" min={1} defaultValue={sub.rank ?? undefined} />
+              </div>
+            </div>
             <div className="space-y-2">
-              <Label htmlFor="score">Score (optional)</Label>
-              <Input
-                id="score"
-                name="score"
-                type="number"
-                step={0.1}
-                defaultValue={sub.score ?? undefined}
+              <Label htmlFor="judge_comment">Judge comment</Label>
+              <Textarea
+                id="judge_comment"
+                name="judge_comment"
+                rows={3}
+                defaultValue={sub.judge_comment ?? ""}
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="note">Moderation note</Label>
-              <Textarea id="note" name="note" rows={3} defaultValue={sub.moderation_note ?? ""} />
+              <Label htmlFor="moderation_note">Moderation note (internal)</Label>
+              <Textarea
+                id="moderation_note"
+                name="moderation_note"
+                rows={3}
+                defaultValue={sub.moderation_note ?? ""}
+              />
             </div>
-            <div className="flex flex-wrap gap-2">
-              <Button type="submit" formAction={moderate.bind(null, "approved")}>
-                Approve
+            <Button type="submit">Save notes & score</Button>
+          </form>
+
+          <div className="mt-6 flex flex-wrap gap-2 border-t pt-6">
+            <form action={statusForm.bind(null, id, subId, "approved")}>
+              <Button type="submit">Approve</Button>
+            </form>
+            <form action={statusForm.bind(null, id, subId, "shortlisted")}>
+              <Button type="submit" variant="secondary">
+                Shortlist
               </Button>
-              <Button
-                type="submit"
-                formAction={moderate.bind(null, "rejected")}
-                variant="destructive"
-              >
+            </form>
+            <form action={statusForm.bind(null, id, subId, "winner")}>
+              <Button type="submit" variant="default">
+                Mark winner
+              </Button>
+            </form>
+            <form action={statusForm.bind(null, id, subId, "rejected")}>
+              <Button type="submit" variant="destructive">
                 Reject
               </Button>
-              <Button
-                type="submit"
-                formAction={moderate.bind(null, "pending")}
-                variant="outline"
-              >
-                Mark pending
-              </Button>
-            </div>
-          </form>
+            </form>
+          </div>
         </CardContent>
       </Card>
     </div>
